@@ -424,7 +424,7 @@ CREATE TABLE `nuke_bbauth_arcade_access` (
 CREATE TABLE `nuke_bbbanlist` (
   `ban_id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `ban_userid` mediumint(8) NOT NULL DEFAULT '0',
-  `ban_ip` varchar(8) NOT NULL DEFAULT '',
+  `ban_ip` varchar(39) NOT NULL DEFAULT '',
   `ban_email` varchar(255) DEFAULT NULL,
   `ban_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`ban_id`),
@@ -1199,7 +1199,7 @@ CREATE TABLE `nuke_bblogs` (
   `topic_id` mediumint(10) DEFAULT '0',
   `user_id` mediumint(8) DEFAULT '0',
   `username` varchar(255) DEFAULT '',
-  `user_ip` varchar(8) NOT NULL DEFAULT '0',
+  `user_ip` varchar(39) NOT NULL DEFAULT '0',
   `time` int(11) DEFAULT '0',
   `new_topic_id` mediumint(10) NOT NULL DEFAULT '0',
   `forum_id` mediumint(10) NOT NULL DEFAULT '0',
@@ -1239,7 +1239,7 @@ CREATE TABLE `nuke_bbposts` (
   `forum_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   `poster_id` mediumint(8) NOT NULL DEFAULT '0',
   `post_time` int(11) NOT NULL DEFAULT '0',
-  `poster_ip` varchar(8) NOT NULL DEFAULT '',
+  `poster_ip` varchar(39) NOT NULL DEFAULT '',
   `post_username` varchar(25) DEFAULT NULL,
   `enable_bbcode` tinyint(1) NOT NULL DEFAULT '1',
   `enable_html` tinyint(1) NOT NULL DEFAULT '0',
@@ -1318,7 +1318,7 @@ CREATE TABLE `nuke_bbprivmsgs` (
   `privmsgs_from_userid` mediumint(8) NOT NULL DEFAULT '0',
   `privmsgs_to_userid` mediumint(8) NOT NULL DEFAULT '0',
   `privmsgs_date` int(11) NOT NULL DEFAULT '0',
-  `privmsgs_ip` varchar(8) NOT NULL DEFAULT '',
+  `privmsgs_ip` varchar(39) NOT NULL DEFAULT '',
   `privmsgs_enable_bbcode` tinyint(1) NOT NULL DEFAULT '1',
   `privmsgs_enable_html` tinyint(1) NOT NULL DEFAULT '0',
   `privmsgs_enable_smilies` tinyint(1) NOT NULL DEFAULT '1',
@@ -1342,7 +1342,7 @@ CREATE TABLE `nuke_bbprivmsgs_archive` (
   `privmsgs_from_userid` mediumint(8) NOT NULL DEFAULT '0',
   `privmsgs_to_userid` mediumint(8) NOT NULL DEFAULT '0',
   `privmsgs_date` int(11) NOT NULL DEFAULT '0',
-  `privmsgs_ip` varchar(8) NOT NULL DEFAULT '',
+  `privmsgs_ip` varchar(39) NOT NULL DEFAULT '',
   `privmsgs_enable_bbcode` tinyint(1) NOT NULL DEFAULT '1',
   `privmsgs_enable_html` tinyint(1) NOT NULL DEFAULT '0',
   `privmsgs_enable_smilies` tinyint(1) NOT NULL DEFAULT '1',
@@ -1747,7 +1747,7 @@ CREATE TABLE `nuke_bbsessions` (
   `session_user_id` mediumint(8) NOT NULL DEFAULT '0',
   `session_start` int(11) NOT NULL DEFAULT '0',
   `session_time` int(11) NOT NULL DEFAULT '0',
-  `session_ip` varchar(8) NOT NULL DEFAULT '0',
+  `session_ip` varchar(39) NOT NULL DEFAULT '0',
   `session_page` int(11) NOT NULL DEFAULT '0',
   `session_logged_in` tinyint(1) NOT NULL DEFAULT '0',
   `session_admin` tinyint(2) NOT NULL DEFAULT '0',
@@ -1768,7 +1768,7 @@ CREATE TABLE `nuke_bbsessions` (
 CREATE TABLE `nuke_bbsessions_keys` (
   `key_id` varchar(32) NOT NULL DEFAULT '0',
   `user_id` mediumint(8) NOT NULL DEFAULT '0',
-  `last_ip` varchar(8) NOT NULL DEFAULT '0',
+  `last_ip` varchar(39) NOT NULL DEFAULT '0',
   `last_login` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`key_id`,`user_id`),
   KEY `last_login` (`last_login`)
@@ -2306,7 +2306,7 @@ CREATE TABLE `nuke_bbvote_results` (
 CREATE TABLE `nuke_bbvote_voters` (
   `vote_id` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
   `vote_user_id` mediumint(8) NOT NULL DEFAULT '0',
-  `vote_user_ip` char(8) NOT NULL DEFAULT '',
+  `vote_user_ip` char(39) NOT NULL DEFAULT '',
   `vote_cast` tinyint(4) UNSIGNED NOT NULL DEFAULT '0',
   KEY `vote_id` (`vote_id`),
   KEY `vote_user_id` (`vote_user_id`),
@@ -3531,7 +3531,7 @@ CREATE TABLE `nuke_link_us` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `user_name` varchar(60) NOT NULL DEFAULT '',
   `user_email` varchar(60) NOT NULL DEFAULT '',
-  `user_ip` varchar(20) NOT NULL DEFAULT '',
+  `user_ip` varchar(39) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
@@ -3908,7 +3908,7 @@ CREATE TABLE `nuke_nsnsp_sites` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `user_name` varchar(60) NOT NULL DEFAULT '',
   `user_email` varchar(60) NOT NULL DEFAULT '',
-  `user_ip` varchar(20) NOT NULL DEFAULT '',
+  `user_ip` varchar(39) NOT NULL DEFAULT '',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -3937,7 +3937,7 @@ CREATE TABLE `nuke_nsnst_admins` (
 --
 
 CREATE TABLE `nuke_nsnst_blocked_ips` (
-  `ip_addr` varchar(15) NOT NULL DEFAULT '',
+  `ip_addr` varchar(39) NOT NULL DEFAULT '',
   `ip_long` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '1',
   `username` varchar(60) NOT NULL DEFAULT 'Anonymous',
@@ -3949,7 +3949,7 @@ CREATE TABLE `nuke_nsnst_blocked_ips` (
   `get_string` text NOT NULL,
   `post_string` text NOT NULL,
   `x_forward_for` varchar(32) NOT NULL DEFAULT 'None',
-  `client_ip` varchar(32) NOT NULL DEFAULT 'None',
+  `client_ip` varchar(39) NOT NULL DEFAULT 'None',
   `remote_addr` varchar(32) NOT NULL DEFAULT '',
   `remote_port` varchar(11) NOT NULL DEFAULT 'Unknown',
   `request_method` varchar(10) NOT NULL DEFAULT '',
@@ -5068,7 +5068,7 @@ CREATE TABLE `nuke_nsnst_strings` (
 
 CREATE TABLE `nuke_nsnst_tracked_ips` (
   `tid` int(10) NOT NULL AUTO_INCREMENT,
-  `ip_addr` varchar(15) NOT NULL DEFAULT '',
+  `ip_addr` varchar(39) NOT NULL DEFAULT '',
   `ip_long` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '1',
   `username` varchar(60) NOT NULL DEFAULT '',
@@ -5077,8 +5077,8 @@ CREATE TABLE `nuke_nsnst_tracked_ips` (
   `date` int(20) NOT NULL DEFAULT '0',
   `page` text NOT NULL,
   `x_forward_for` varchar(32) NOT NULL DEFAULT '',
-  `client_ip` varchar(32) NOT NULL DEFAULT '',
-  `remote_addr` varchar(32) NOT NULL DEFAULT '',
+  `client_ip` varchar(39) NOT NULL DEFAULT '',
+  `remote_addr` varchar(39) NOT NULL DEFAULT '',
   `remote_port` varchar(11) NOT NULL DEFAULT '',
   `request_method` varchar(10) NOT NULL DEFAULT '',
   `c2c` char(2) NOT NULL DEFAULT '00',
@@ -5161,7 +5161,7 @@ CREATE TABLE `nuke_pollcomments` (
 -- Table structure for table `nuke_poll_check`
 --
 CREATE TABLE `nuke_poll_check` (
-  `ip` varchar(20) NOT NULL DEFAULT '',
+  `ip` varchar(39) NOT NULL DEFAULT '',
   `time` varchar(14) NOT NULL DEFAULT '',
   `pollID` int(10) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -5620,7 +5620,7 @@ CREATE TABLE `nuke_session` (
   `uname` varchar(25) NOT NULL DEFAULT '',
   `time` varchar(14) NOT NULL DEFAULT '',
   `starttime` varchar(14) NOT NULL DEFAULT '',
-  `host_addr` varchar(48) NOT NULL DEFAULT '',
+  `host_addr` varchar(49) NOT NULL DEFAULT '',
   `guest` int(1) NOT NULL DEFAULT '0',
   `module` varchar(30) NOT NULL DEFAULT '',
   `url` varchar(255) NOT NULL DEFAULT '',
@@ -6340,7 +6340,7 @@ CREATE TABLE `nuke_users` (
   `user_actkey` varchar(32) DEFAULT NULL,
   `user_newpasswd` varchar(32) DEFAULT NULL,
   `points` int(10) DEFAULT '0',
-  `last_ip` varchar(15) NOT NULL DEFAULT '0',
+  `last_ip` varchar(39) NOT NULL DEFAULT '0',
   `user_wordwrap` smallint(3) NOT NULL DEFAULT '70',
   `agreedtos` tinyint(1) NOT NULL DEFAULT '0',
   `user_allowsignature` tinyint(4) NOT NULL DEFAULT '1',
