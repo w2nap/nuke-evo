@@ -440,7 +440,7 @@ function _file_repository_save_file()
 	$isactive      		= (!empty($_POST['isactive'])) ? intval($_POST['isactive']) : 0;
 	$isapproved      	= (!empty($_POST['isapproved'])) ? intval($_POST['isapproved']) : 0;
 	$isfeatured	     	= (!empty($_POST['isfeatured'])) ? intval($_POST['isfeatured']) : 0;
-	$isupdated 			= (!empty($_POST['isupdated'])) ? intval($_POST['isupdated']) : 0;
+	$isupdated 			= (!empty($_POST['isupdated'])) ? intval($_POST['isupdated']) : 1;
 	$paypal 			= (!empty($_POST['paypal'])) ? $_POST['paypal'] : '';
 	$posts 				= (!empty($_POST['posts'])) ? intval($_POST['posts']) : 0;
 	$preview 			= (!empty($_POST['preview'])) ? $_POST['preview'] : '';
@@ -463,7 +463,7 @@ function _file_repository_save_file()
 		`isapproved` = '".$isapproved."',
 		`isbroken` = '0',
 		`isfeatured` = '".$isfeatured."',
-		`isnew` = '0',
+		`isnew` = '1',
 		`paypal` = '".$paypal."',
 		`posts` = '".$posts."',
 		`preview` = '".$preview."',
