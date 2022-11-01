@@ -4,7 +4,7 @@
  =======================================================================*/
 
 /*********************************************
-  CPG Dragonfly™ CMS
+  CPG Dragonflyï¿½ CMS
   ********************************************
   Copyright (c) 2004 - 2006 by CPG-Nuke Dev Team
   http://dragonflycms.org
@@ -23,9 +23,9 @@
 	on other sites.
 */
 
-class BBCode 
+class BBCode
 {
-	public static function encode_html($text) 
+	public static function encode_html($text)
 	{
 		return (preg_match('/</', $text)) ? stripslashes(check_html($text, '')) : $text;
 	}
@@ -108,14 +108,14 @@ class BBCode
         # [url]xxxx://www.cpgnuke.com[/url]
 		// $text = preg_replace_callback("(\[url\]([\w]+?://[^ \[\"\n\r\t<]*?)\[/url\])is", function($m) { return '<a href="'.$m[1].'" target="_blank" title="'.$m[1].'">'.shrink_url($m[1]).'</a>'; }, $text);
 		$text = preg_replace_callback("#\[url\]((?!javascript)[a-z]+?://)([^\r\n\"<]+?)\[/url\]#si", function($m) { return '<a href="'. $m[1] . $m[2] .'" target="_blank" title="'.$m[1] . $m[2].'">'.$m[1] . $m[2].'</a>'; }, $text);
-		
+
         # [url]www.cpgnuke.com[/url] (no xxxx:// prefix).
 		$text = preg_replace_callback("(\[url\]((www|ftp)\.[^ \[\"\n\r\t<]*?)\[/url\])is", function($m) { return '<a href="http://'.$m[1].'" target="_blank" title="'.$m[1].'">'.$m[1].'</a>'; }, $text);
-		
+
         # [url=www.cpgnuke.com]cpgnuke[/url] (no xxxx:// prefix).
 		$text = preg_replace_callback("(\[url=((www|ftp)\.[^ \"\n\r\t<]*?)\](.*?)\[/url\])is", function($m) { return '<a href="http://'.$m[1].'" target="_blank" title="'.$m[1].'">'.$m[3].'</a>'; }, $text);
-	
-        # [url=xxxx://www.cpgnuke.com]cpgnuke[/url]	
+
+        # [url=xxxx://www.cpgnuke.com]cpgnuke[/url]
 		$text = preg_replace_callback("(\[url=(.*?)\](.*?)\[/url\])is", function($m) { return '<a href="'.$m[1].'" target="_blank" title="'.$m[1].'">'.$m[2].'</a>'; }, $text);
 
 		# [spoil]Spoiler[/spoil] code..
@@ -133,18 +133,21 @@ class BBCode
     	# Spoiler tag
     	$text = preg_replace_callback("(\[spoil\](.*?)\[/spoil\])is", 'BBCode::evo_spoil_callback', $text);
 
+		# Font Size
+		$text = preg_replace_callback("(\[size=(.*?)\](.*?)\[/size\])is", function($m) { return '<span style="font-size: '.$m[1].';">'.$m[2].'</span>'; }, $text);
+
 		/**
 		 *  The BBCODES below are for SCEditor support
 		 */
 		# SCeditor Center Alignment
 		$text = preg_replace_callback("(\[center\](.*?)\[/center\])is", function($m) { return '<div style="text-align:center;">'.$m[1].'</div>'; }, $text);
-		
+
 		# SCeditor Left Alignment
 		$text = preg_replace_callback("(\[left\](.*?)\[/left\])is", function($m) { return '<div style="text-align:left;">'.$m[1].'</div>'; }, $text);
-		
+
 		# SCeditor Right Alignment
 		$text = preg_replace_callback("(\[right\](.*?)\[/right\])is", function($m) { return '<div style="text-align:right;">'.$m[1].'</div>'; }, $text);
-		
+
 		# SCeditor Justify Alignment
 		$text = preg_replace_callback("(\[justify\](.*?)\[/justify\])is", function($m) { return '<div style="text-align:justify;">'.$m[1].'</div>'; }, $text);
 
@@ -240,7 +243,6 @@ class BBCode
 	}
 
 
-	
 	# Parse the YouTube video
 	public static function evo_parse_video_callback( $matches ) 
 	{
@@ -249,7 +251,7 @@ class BBCode
 
 	public static function evo_parse_video( $video, $url )
 	{
-		global $bbcode_tpl, $board_config, $nukeurl;
+		global $board_config, $nukeurl;
 
 		$stripped_url = preg_replace("(^https?://)", "", $nukeurl );
 
@@ -260,23 +262,20 @@ class BBCode
 
 		$parsed_url = parse_url(urldecode($url));
 
-		$winchester = '';
-		if($parsed_url == false)
-		{
+
+		if ($parsed_url == false) {
 			return "[video={$video}]{$url}[/video]";
 		}
 
 		$fragments = array();
-		if($parsed_url['fragment'])
-		{
+		if ($parsed_url['fragment']) {
 			$fragments = explode("&", $parsed_url['fragment']);
 		}
 
 		$queries = explode("&", $parsed_url['query']);
 
 		$input = array();
-		foreach($queries as $query)
-		{
+		foreach ($queries as $query) {
 			list($key, $value) = explode("=", $query);
 			$key = str_replace("amp;", "", $key);
 			$input[$key] = $value;
@@ -289,10 +288,10 @@ class BBCode
 			case "youtube":
 				if($fragments[0])
 					# http://www.youtube.com/watch#!v=fds123
-					$id = str_replace('!v=', '', $fragments[0]); 
+					$id = str_replace('!v=', '', $fragments[0]);
 				elseif($input['v'])
 					# http://www.youtube.com/watch?v=fds123
-					$id = $input['v']; 
+					$id = $input['v'];
 				else
 					# http://www.youtu.be/fds123
 					$id = $path[1];
@@ -303,9 +302,7 @@ class BBCode
 			/* ----- twitch video embed ----- */
 			case "twitch":
 
-				// if(preg_match("/clip/", $url, $matches)):
 				if ( preg_match('/(clips?|clip)/', $url, $matches) ):
-
 					$clips = explode('/', $url);
 					// $id = 'embed?clip='.$clips[5].'';
 					if ( $matches[1] == 'clip' ):
@@ -314,9 +311,9 @@ class BBCode
 						$id = 'embed?clip='.$clips[3].'&parent='.$stripped_url.'&autoplay=false&tt_medium=clips_embed';
 					endif;
 					$player = 'clips';
-				
+
 				else:
-				
+
 					if(count($path) >= 3 && $path[1] == 'videos')
 					{
 						// Direct video embed with URL like: https://www.twitch.tv/videos/179723472
@@ -336,15 +333,14 @@ class BBCode
 					$time = explode("?", $url);
 
 					$player = 'player';
-				
+
 				endif;
-				$video_replace = '<iframe style="max-width: 100%" src="https://'.$player.'.twitch.tv/'.$id.'&amp;autoplay=false" frameborder="0" scrolling="no" height="'.$board_config['twitch_height'].'" width="'.$board_config['twitch_width'].'" allowfullscreen=""></iframe>';                
-				// $video_replace = '<pre>'.var_export( $clips, true ).'</pre>'; 
+				$video_replace = '<iframe style="max-width: 100%" src="https://'.$player.'.twitch.tv/'.$id.'&amp;autoplay=false" frameborder="0" scrolling="no" height="'.$board_config['twitch_height'].'" width="'.$board_config['twitch_width'].'" allowfullscreen=""></iframe>';
 				break;
 
 			default:
 				return "[video={$video}]{$url}[/video]";
-		
+
 		endswitch;
 
 		if(empty($id))
@@ -361,10 +357,8 @@ class BBCode
 
 	public static function evo_mention( $user )
 	{
-		global $db, $customlang;
-		
-		// modules.php?name=Private_Messages&mode=post&pm_uname=Lonestar
-		// $row = $db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".USERS_TABLE."` WHERE `username` = '".$user."'");
+		global $customlang;
+
 		return '<a href="modules.php?name=Private_Messages&mode=post&pm_uname='.$user.'" target="_blank" alt="'.$customlang['global']['send_pm'].'" title="'.$customlang['global']['send_pm'].'">'.$user.'</a>';
 	}
 

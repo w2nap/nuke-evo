@@ -60,7 +60,7 @@ function messages() {
         $admlanguage = $language; /* This to make sure some language is pre-selected */
     }
     OpenTable();
-    echo "<center><span class=\"title\"><strong>" . $admlang['messages']['all'] . "</strong></span><br /><br /><table border=\"1\" width=\"100%\">"
+    echo "<div style=\"text-align: center;\"><span class=\"title\"><strong>" . $admlang['messages']['all'] . "</strong></span><br /><br /><table border=\"1\" width=\"100%\">"
     ."<tr><td align=\"center\"><strong>" . $admlang['global']['ID'] . "</strong></td>"
     ."<td align=\"center\"><strong>" . $admlang['global']['title'] . "</strong></td>"
     ."<td align=\"center\">&nbsp;<strong>" . $admlang['global']['language'] . "</strong>&nbsp;</td>"
@@ -118,11 +118,11 @@ function messages() {
         ."</td></tr>";
 
     }
-    echo "</table></center><br />";
+    echo "</table></div><br />";
     CloseTable();
     echo "<br />";
     OpenTable();
-    echo "<center><span class=\"title\"><strong>" . $admlang['messages']['add'] . "</strong></span></center><br />";
+    echo "<div style=\"text-align: center;\"><span class=\"title\"><strong>" . $admlang['messages']['add'] . "</strong></span></div><br />";
     echo "<form action=\"".$admin_file.".php\" method=\"post\" name=\"message\">"
     ."<br /><strong>" . $admlang['global']['title'] . ":</strong><br />"
     ."<input type=\"text\" name=\"add_title\" value=\"\" size=\"50\" maxlength=\"100\"><br /><br />"
@@ -149,7 +149,7 @@ function messages() {
     sort($languageslist);
     for ($i=0; $i < count($languageslist); $i++) {
         if($languageslist[$i]!="") {
-        echo "<option value=\"$languageslist[$i]\" ";
+        echo "<option value=\"".$languageslist[$i]."\" ";
         if($languageslist[$i]==$language) echo "selected";
         echo ">".ucfirst($languageslist[$i])."</option>\n";
         }
@@ -220,7 +220,7 @@ function editmsg($mid) {
     $view = intval($row['view']);
     $mlanguage = $row['mlanguage'];
     OpenTable();
-    echo "<center><span class=\"title\"><strong>" . $admlang['messages']['edit'] . "</strong></span></center>";
+    echo "<div style=\"text-align: center;\"><span class=\"title\"><strong>" . $admlang['messages']['edit'] . "</strong></span></div>";
     if ($active == 1) {
     $asel1 = "checked";
     $asel2 = "";
@@ -274,8 +274,8 @@ function editmsg($mid) {
  [ Mod:     Custom Text Area                   v1.0.0 ]
  ******************************************************/
     if ($multilingual == 1) {
-    echo "<strong>" . $admlang['global']['language'] . ": </strong>"
-        ."<select name=\"mlanguage\">";
+    echo '<strong>' . $admlang['global']['language'] . ': </strong>'
+        .'<select name="mlanguage">';
     $handle=opendir('language');
     while ($file = readdir($handle)) {
         if (preg_match("/^lang\-(.+)\.php/", $file, $matches)) {
@@ -287,16 +287,16 @@ function editmsg($mid) {
     $languageslist = explode(" ", $languageslist);
     sort($languageslist);
     for ($i=0; $i < count($languageslist); $i++) {
-        if(!empty($languageslist[$i])) {
-        echo "<option value=\"$languageslist[$i]\" ";
-        if($languageslist[$i]==$mlanguage) echo "selected";
+        if (!empty($languageslist[$i])) {
+        echo '<option value="'.$languageslist[$i].'" ';
+        if($languageslist[$i]==$mlanguage) echo 'selected';
         echo ">".ucfirst($languageslist[$i])."</option>\n";
         }
     }
     if (empty($mlanguage)) {
         $sellang = 'selected';
     } else {
-            $sellang = '';
+        $sellang = '';
     }
     echo "<option value=\"\" $sellang>" . $admlang['global']['all'] . "</option></select><br /><br />";
     } else {
@@ -371,7 +371,7 @@ function savemsg($mid, $title, $content, $mdate, $expire, $active, $view, $group
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
-    $result = $db->sql_query("update " . $prefix . "_message set title='$title', content='$content', date='$newdate', expire='$expire', active='$active', view='$view', groups='$ingroups', mlanguage='$mlanguage' WHERE mid='$mid'");
+    $db->sql_query("UPDATE " . $prefix . "_message SET `title` = '$title', `content` = '$content', `date` = '$newdate', `expire` = '$expire', `active` = '$active', `view` = '$view', `groups` = '$ingroups', `mlanguage` = '$mlanguage' WHERE `" . $prefix . "_message`.`mid` = $mid");
 /*****[END]********************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
@@ -414,8 +414,8 @@ function deletemsg($mid, $ok=0) {
     CloseTable();
     echo "<br />";
     OpenTable();
-    echo "<center>" . $admlang['messages']['remove'] . "";
-    echo "<br /><br />[ <a href=\"".$admin_file.".php?op=messages\">" . $admlang['global']['no'] . "</a> | <a href=\"".$admin_file.".php?op=deletemsg&amp;mid=$mid&amp;ok=1\">" . $admlang['global']['yes'] . "</a> ]</center>";
+    echo "<div style=\"text-align: center;\">" . $admlang['messages']['remove'] . "";
+    echo "<br /><br />[ <a href=\"".$admin_file.".php?op=messages\">" . $admlang['global']['no'] . "</a> | <a href=\"".$admin_file.".php?op=deletemsg&amp;mid=$mid&amp;ok=1\">" . $admlang['global']['yes'] . "</a> ]</div>";
         CloseTable();
     include(NUKE_BASE_DIR.'footer.php');
     }
@@ -469,5 +469,3 @@ switch ($op){
 } else {
     echo "Access Denied";
 }
-
-?>
