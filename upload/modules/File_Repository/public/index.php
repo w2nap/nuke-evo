@@ -90,7 +90,7 @@ function _file_repository_index()
 		echo '</table>'."\n";
 	}
 
-	$dresult = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isactive`='1' && `isbroken`='0' && `cid`='".$cid."' LIMIT ".$limit1.", ".$limit2);
+	$dresult = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isactive`='1' && `isbroken`='0' && `cid`='".$cid."' ORDER BY `title` ASC LIMIT ".$limit1.", ".$limit2);
 	if($db->sql_numrows($dresult) > 0)
 	{
 		echo '<br />';
