@@ -616,13 +616,12 @@ if (isset($_POST['groupstatus']) && $group_id) {
                                     $group_check[$row['user_id']][] = $row['group_id'];
                                 } while ($row = $db->sql_fetchrow($result));
                                 
-                                while (list($user_id, $group_list) = @each($group_check)) 
-                                {
-                                    if (count($group_list) == 1) 
-                                    {
-                                        $remove_mod_sql .= (($remove_mod_sql != '') ? ', ' : '') . $user_id;
-                                    }
-                                }
+                                foreach ($group_check as $user_id => $group_list) {
+    if ((is_countable($group_list) ? count($group_list) : 0) == 1) 
+    {
+        $remove_mod_sql .= (($remove_mod_sql != '') ? ', ' : '') . $user_id;
+    }
+}
                                 
                                 if ($remove_mod_sql != '') 
                                 {

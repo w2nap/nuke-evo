@@ -504,6 +504,7 @@ function EvoCrypt($pass) {
 }
 
 // http://www.php.net/array_combine
+// THIS CODE IS LIKELY TO BREAK WITH PHP8 DUE TO each() REMOVED FROM PHP, HOWEVER UNABLE TO CHANGE DUE TO CODE BREAKAGE.
 if (!function_exists('array_combine')) {
     function array_combine($keys, $values) {
         $result = array();
@@ -557,10 +558,9 @@ function EvoDate($format, $gmepoch, $tz)
     		@include(NUKE_FORUMS_DIR.'language/lang_'.$lang.'/lang_time.php');
     		if (!(empty($langtime['datetime'])))
     		{
-        	while ( list($match, $replace) = @each($langtime['datetime']) )
-        	{
-            $translate[$match] = $replace;
-        	}
+        	foreach ($langtime['datetime'] as $match => $replace) {
+    $translate[$match] = $replace;
+}
         }
     }
 	if ( $userinfo['user_id'] != 1 )

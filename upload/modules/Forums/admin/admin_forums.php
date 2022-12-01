@@ -680,7 +680,13 @@ if( isset($HTTP_POST_VARS['addforum']) || isset($HTTP_POST_VARS['addcategory']) 
 
         {
 
-                list($cat_id) = each($HTTP_POST_VARS['addforum']);
+                //rector php8 remove each()
+                (list($cat_id))[1] = current($_POST['addforum']);
+(list($cat_id))['value'] = current($_POST['addforum']);
+(list($cat_id))[0] = key($_POST['addforum']);
+(list($cat_id))['key'] = key($_POST['addforum']);
+next($_POST['addforum']);
+                //rector end
 
                 $cat_id = intval($cat_id);
 
@@ -1394,17 +1400,12 @@ if( !empty($mode) )
 
                         $value_sql = "";
 
-                        while( list($field, $value) = each($forum_auth_ary) )
-
-                        {
-
-                                $field_sql .= ", $field";
-
-                                $value_sql .= ", $value";
-
-
-
-                        }
+                        //rector php8 remove each()
+                        foreach ($forum_auth_ary as $field => $value) {
+    $field_sql .= ", $field";
+    $value_sql .= ", $value";
+}
+                        //rector end
 
 
 

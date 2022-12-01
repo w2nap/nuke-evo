@@ -53,13 +53,13 @@ class Content_values
         
         @reset($data);
         $i = 0;
-        while (list($key, $value) = each($data))
-        {
-            $this->column_data[$i]['key'] = $key;
-            $this->column_data[$i]['value'] = $value;
-            $i++;
-        }
-
+        //php8 remove each()
+        foreach ($data as $key => $value) {
+    $this->column_data[$i]['key'] = $key;
+    $this->column_data[$i]['value'] = $value;
+    $i++;
+}
+        //end php8
         $this->num_columns = $this->columns * $this->num_blocks;
         $stats_template->assign_vars(array(
             'NUM_COLUMNS' => $this->num_columns)

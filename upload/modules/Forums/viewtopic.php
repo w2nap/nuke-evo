@@ -1673,19 +1673,18 @@ for($i = 0; $i < $total_posts; $i++)
     	if( $postrow[$i]['user_id'] != ANONYMOUS )
     	{
     		reset($already_processed);
-    		while( list(, $v) = each($already_processed) )
-    		{
-    			if( $v == $postrow[$i]['user_id'] )
-    			{
-    				// We've already processed a post by this user on this page
-    				global $board_config;
-    				$leave_out['show_sig_once']     = $board_config['show_sig_once'];
-    				$leave_out['show_avatar_once']  = $board_config['show_avatar_once'];
-    				$leave_out['show_rank_once']    = $board_config['show_rank_once'];
-    				$leave_out['main'] = true;
-    				continue 1;
-    			}
-    		}
+    		foreach ($already_processed as $v) {
+    if( $v == $postrow[$i]['user_id'] )
+ 			{
+ 				// We've already processed a post by this user on this page
+ 				global $board_config;
+ 				$leave_out['show_sig_once']     = $board_config['show_sig_once'];
+ 				$leave_out['show_avatar_once']  = $board_config['show_avatar_once'];
+ 				$leave_out['show_rank_once']    = $board_config['show_rank_once'];
+ 				$leave_out['main'] = true;
+ 				continue 1;
+ 			}
+}
 
     		if( !$leave_out['main'] )
     		{
@@ -2202,6 +2201,7 @@ for($i = 0; $i < $total_posts; $i++)
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
                 @reset($poster_xd);
+                //rector unable to convert each() removed in PHP8 will likely cause error.
                 while ( list($code_name, ) = each($poster_xd) )
                 {
                     /*$poster_xd[$code_name] = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $poster_xd[$code_name] . '<'), 1, -1));*/
@@ -2396,15 +2396,15 @@ for($i = 0; $i < $total_posts; $i++)
 $xd_root = array();
 $xd_block = array();
 $xd_meta = get_xd_metadata();
-while ( list($code_name, $meta) = each($xd_meta) )
-{
+
+foreach ($xd_meta as $code_name => $meta) {
     if ( isset($poster_xd[$code_name]) )
     {
         $value = $poster_xd[$code_name];
 
         if ( !$meta['allow_html'] )
         {
-            $value = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $value);
+            $value = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", (string) $value);
         }
 
         if ( $meta['allow_bbcode'] && $user_sig_bbcode_uid != '')
@@ -2431,7 +2431,7 @@ while ( list($code_name, $meta) = each($xd_meta) )
 /*****[ENDE]*******************************************
  [ Mod:    XData Date Conversion               v0.1.1 ]
  ******************************************************/
-        $value = str_replace("\n", "\n<br />\n", $value);
+        $value = str_replace("\n", "\n<br />\n", (string) $value);
 
         if ( $meta['display_posting'] == XD_DISPLAY_ROOT && $meta['viewtopic'])
         {
@@ -2866,27 +2866,22 @@ else
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
      @reset($xd_block);
-     while ( list($code_name, $value) = each($xd_block) )
-     {
-         $template->assign_block_vars( 'postrow.xdata', array(
-             'NAME' => $xd_meta[$code_name]['field_name'],
-             'VALUE' => $value
-             )
-         );
-     }
+     foreach ($xd_block as $code_name => $value) {
+    $template->assign_block_vars( 'postrow.xdata', ['NAME' => $xd_meta[$code_name]['field_name'], 'VALUE' => $value]
+    );
+}
 
      @reset($xd_meta);
-     while ( list($code_name, $value) = each($xd_meta) )
-     {
-         if (isset($xd_root[$code_name]))
-         {
-             $template->assign_block_vars( "postrow.switch_$code_name", array() );
-         }
-            else
-            {
-                $template->assign_block_vars( "postrow.switch_no_$code_name", array() );
-            }
-     }
+     foreach ($xd_meta as $code_name => $value) {
+    if (isset($xd_root[$code_name]))
+    {
+        $template->assign_block_vars( "postrow.switch_$code_name", [] );
+    }
+       else
+       {
+           $template->assign_block_vars( "postrow.switch_no_$code_name", [] );
+       }
+}
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/

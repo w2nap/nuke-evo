@@ -77,9 +77,10 @@ function get_topic_id($topic)
         parse_str($parms, $parm);
         $found = false;
         $topic_id = 0;
-        while ((list($key, $val) = each($parm)) && !$found)
+        //rector convert
+        while (!$found)
         {
-            $vals = explode('#', $val);
+            $vals = explode('#', (string) $val);
             $val = $vals[0];
             if (empty($val)) $val = 0;
             switch($key)
@@ -102,6 +103,12 @@ function get_topic_id($topic)
                 $topic_id = intval($val);
             }
         }
+(list($key, $val))[1] = current($parm);
+(list($key, $val))['value'] = current($parm);
+(list($key, $val))[0] = key($parm);
+(list($key, $val))['key'] = key($parm);
+next($parm);
+		//rector convert end.
     }
 
     return $topic_id;

@@ -205,13 +205,14 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                 // Display the script to get the smile_pak cfg file...
                 //
                 $smile_paks_select = "<select name='smile_pak'><option value=''>" . $lang['Select_pak'] . "</option>";
-                while( list($key, $value) = @each($smiley_paks) )
-                {
-                        if ( !empty($value) )
-                        {
-                                $smile_paks_select .= "<option>" . $value . "</option>";
-                        }
-                }
+                //rector php8 remove each()
+                foreach ($smiley_paks as $key => $value) {
+    if ( !empty($value) )
+    {
+            $smile_paks_select .= "<option>" . $value . "</option>";
+    }
+}
+                //rector end
                 $smile_paks_select .= "</select>";
 
                 $hidden_vars = "<input type='hidden' name='mode' value='import'>";

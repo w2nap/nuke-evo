@@ -25,24 +25,24 @@ $smilies_on = ( $userdata['user_allowsmile'] && $board_config['allow_smilies']  
 
 // check and set various parameters
 $params = array('submit' => 'save', 'preview' => 'preview', 'mode' => 'mode');
-while( list($var, $param) = @each($params) )
-{
-    if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
+//RECTOR COMPLAINED, MIGHT BREAK CODE MAYBE 30-NOV-22
+foreach ($params as $var => $param)
     {
-        $$var = ( !empty($HTTP_POST_VARS[$param]) ) ? $HTTP_POST_VARS[$param] : $HTTP_GET_VARS[$param];
+        if ( !empty($HTTP_POST_VARS[$param]) || !empty($HTTP_GET_VARS[$param]) )
+        {
+            $$var = ( !empty($HTTP_POST_VARS[$param]) ) ? $HTTP_POST_VARS[$param] : $HTTP_GET_VARS[$param];
+        }
+        else
+        {
+            $$var = '';
+        }
     }
-    else
-    {
-        $$var = '';
-    }
-}
 
 $trim_var_list = array('signature' => 'signature');
-while( list($var, $param) = @each($trim_var_list) )
-{
-    if ( !empty($HTTP_POST_VARS[$param]) )
+foreach ($trim_var_list as $var => $param) {
+    if ( !empty($_POST[$param]) )
     {
-        $$var = trim($HTTP_POST_VARS[$param]);
+        ${$var} = trim((string) $_POST[$param]);
     }
 }
 

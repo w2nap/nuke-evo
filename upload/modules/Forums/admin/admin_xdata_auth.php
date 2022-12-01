@@ -122,34 +122,23 @@ if ($type == 'user')
 				)
 			);
 
-			while ( list($code_name, $meta) = each($xd_meta) )
-			{
-				$sql = "SELECT xa.auth_value
+			//rector php8 remove each()
+			foreach ($xd_meta as $code_name => $meta) {
+    $sql = "SELECT xa.auth_value
 						FROM " . XDATA_AUTH_TABLE . " xa, " . USER_GROUP_TABLE . " ug
 						WHERE xa.field_id = {$meta['field_id']}
 							AND xa.group_id = ug.group_id
 							AND ug.user_id = {$user_id}";
-
-				if ( ! ( $result = $db->sql_query($sql) ) )
+    if ( ! ( $result = $db->sql_query($sql) ) )
 				{
 	            	message_die(GENERAL_ERROR, $lang['XData_failure_obtaining_user_auth'], "", __LINE__, __FILE__, $sql);
 				}
-
-				$row = $db->sql_fetchrow($result);
-
-				$auth = isset($row['auth_value']) ? $row['auth_value'] : XD_AUTH_DEFAULT;
-
-				$template->assign_block_vars( 'xdata', array(
-					'CODE_NAME' => $code_name,
-					'NAME' => $meta['field_name'],
-
-					'ALLOW_CHECKED' => ( ( $auth == XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ),
-					'DENY_CHECKED' => ( ( $auth == XD_AUTH_DENY ) ? 'checked="checked" ' : '' ),
-					'DEFAULT_CHECKED' => ( ($auth == XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')
-					)
+    $row = $db->sql_fetchrow($result);
+    $auth = $row['auth_value'] ?? XD_AUTH_DEFAULT;
+    $template->assign_block_vars( 'xdata', ['CODE_NAME' => $code_name, 'NAME' => $meta['field_name'], 'ALLOW_CHECKED' => ( ( $auth == XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ), 'DENY_CHECKED' => ( ( $auth == XD_AUTH_DENY ) ? 'checked="checked" ' : '' ), 'DEFAULT_CHECKED' => ( ($auth == XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')]
 				);
-
-			}
+}
+			//end rector
 
 			$template->pparse('body');
 		}
@@ -170,20 +159,17 @@ if ($type == 'user')
 			$personal_group = $db->sql_fetchrow($result);
 			$personal_group = $personal_group['group_id'];
 
-			while ( list($code_name, $meta) = each($xd_meta) )
-			{
-				$auth = str_replace("\'", "''", htmlspecialchars($HTTP_POST_VARS["xd_$code_name"]) );
-
-	            $sql = "DELETE FROM " . XDATA_AUTH_TABLE . "
+			//rector php8 remove each()
+			foreach ($xd_meta as $code_name => $meta) {
+    $auth = str_replace("\'", "''", htmlspecialchars((string) $_POST["xd_$code_name"]) );
+    $sql = "DELETE FROM " . XDATA_AUTH_TABLE . "
 					WHERE group_id = $personal_group
 					AND field_id = {$meta['field_id']}";
-
-	            if (! $db->sql_query($sql) )
+    if (! $db->sql_query($sql) )
 				{
 					message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 				}
-
-				if ( $auth != XD_AUTH_DEFAULT )
+    if ( $auth != XD_AUTH_DEFAULT )
 				{
 
 					$sql = "INSERT INTO " . XDATA_AUTH_TABLE . "
@@ -195,7 +181,8 @@ if ($type == 'user')
 						message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 					}
 				}
-			}
+}
+			//rector end
 
 		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
 			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
@@ -287,32 +274,21 @@ elseif ($type == 'group')
 				)
 			);
 
-			while ( list($code_name, $meta) = each($xd_meta) )
-			{
-				$sql = "SELECT xa.auth_value FROM " . XDATA_AUTH_TABLE . " xa
+			//php8 remove each()
+			foreach ($xd_meta as $code_name => $meta) {
+    $sql = "SELECT xa.auth_value FROM " . XDATA_AUTH_TABLE . " xa
 					WHERE xa.field_id = {$meta['field_id']}
 					AND xa.group_id = {$group_id}";
-
-				if ( ! ( $result = $db->sql_query($sql) ) )
+    if ( ! ( $result = $db->sql_query($sql) ) )
 				{
 	            	message_die(GENERAL_ERROR, $lang['XData_failure_obtaining_user_auth'], "", __LINE__, __FILE__, $sql);
 				}
-
-				$row = $db->sql_fetchrow($result);
-
-				$auth = isset($row['auth_value']) ? $row['auth_value'] : XD_AUTH_DEFAULT;
-
-				$template->assign_block_vars( 'xdata', array(
-					'CODE_NAME' => $code_name,
-					'NAME' => $meta['field_name'],
-
-					'ALLOW_CHECKED' => ( ( $auth == XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ),
-					'DENY_CHECKED' => ( ( $auth == XD_AUTH_DENY ) ? 'checked="checked" ' : '' ),
-					'DEFAULT_CHECKED' => ( ($auth == XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')
-					)
+    $row = $db->sql_fetchrow($result);
+    $auth = $row['auth_value'] ?? XD_AUTH_DEFAULT;
+    $template->assign_block_vars( 'xdata', ['CODE_NAME' => $code_name, 'NAME' => $meta['field_name'], 'ALLOW_CHECKED' => ( ( $auth == XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ), 'DENY_CHECKED' => ( ( $auth == XD_AUTH_DENY ) ? 'checked="checked" ' : '' ), 'DEFAULT_CHECKED' => ( ($auth == XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')]
 				);
-
-			}
+}
+			//end php8 mod
 
 			$template->pparse('body');
 		}
@@ -322,20 +298,17 @@ elseif ($type == 'group')
 			 Save the settings
 			*/
 
-			while ( list($code_name, $meta) = each($xd_meta) )
-			{
-				$auth = htmlspecialchars($HTTP_POST_VARS["xd_$code_name"]);
-
-	            $sql = "DELETE FROM " . XDATA_AUTH_TABLE . "
+			//php8 remove each()
+			foreach ($xd_meta as $code_name => $meta) {
+    $auth = htmlspecialchars((string) $_POST["xd_$code_name"]);
+    $sql = "DELETE FROM " . XDATA_AUTH_TABLE . "
 					WHERE group_id = $group_id
 					AND field_id = {$meta['field_id']}";
-
-	            if (! $db->sql_query($sql) )
+    if (! $db->sql_query($sql) )
 				{
 					message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 				}
-
-				if ( $auth != XD_AUTH_DEFAULT )
+    if ( $auth != XD_AUTH_DEFAULT )
 				{
 
 					$sql = "INSERT INTO " . XDATA_AUTH_TABLE . "
@@ -347,7 +320,8 @@ elseif ($type == 'group')
 						message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 					}
 				}
-			}
+}
+			//end php8 edit
 
 		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
 			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");

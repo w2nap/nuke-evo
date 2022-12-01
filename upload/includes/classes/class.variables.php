@@ -432,7 +432,7 @@ class Evo_Variables
 
             unset($input['input']);
             unset($input['not_unset']);
-
+//RECTOR WILL NOT CONVERT, each() HAS BEEN REMOVED FROM PHP8 DO BREAKAGE LIKELY
             while (list($var,) = @each($input)) {
               if (!in_array($var, $not_unset)) {
                 unset($$var);

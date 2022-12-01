@@ -144,7 +144,11 @@ if (($new_lang_submit) && ($new_language != ''))
 else if (count($delete_complete_lang) > 0)
 {
     @reset($delete_complete_lang);
-    list($language, $value) = each($delete_complete_lang);
+    //rector php8 remove each()
+    $language = key($delete_complete_lang);
+$value = current($delete_complete_lang);
+next($delete_complete_lang);
+    //end rector
 
     $language = trim($language);
 
@@ -155,9 +159,17 @@ else if (count($delete_complete_lang) > 0)
 if (count($update_list) > 0)
 {
     @reset($update_list);
-    list($language, $v_array) = each($update_list);
-    list($module_id, $v2_array) = each($v_array);
-    list($key, $value) = each($v2_array);
+    //rector php8 remove each()
+    $language = key($update_list);
+$v_array = current($update_list);
+next($update_list);
+    $module_id = key($v_array);
+    $v2_array = current($v_array);
+    next($v_array);
+    $key = key($v2_array);
+    $value = current($v2_array);
+    next($v2_array);
+    //end rector
 
     set_lang_entry($language, $module_id, $key, $lang_entry[$language][$module_id][$key]);
 }
@@ -166,36 +178,49 @@ else if ($update_all_lang)
     @reset($lang_entry);
 
     // Begin Language
-    while (list($language, $v_array) = each($lang_entry))
-    {
-        // Begin Modules
-        while (list($module_id, $v2_array) = each($v_array))
-        {
-            $lang_block = '';
-            // Begin Language Entries
-            while (list($key, $value) = each($v2_array))
-            {
-                $lang_block .= '$lang[\'' . trim($key) . '\'] = \'' . trim($value) . '\';';
-                $lang_block .= "\n";
-            }
-            set_lang_block($language, $module_id, $lang_block);
+    //rector php8 remove each()
+    foreach ($lang_entry as $language => $v_array) {
+    // Begin Modules
+    foreach ($v_array as $module_id => $v2_array) {
+        $lang_block = '';
+        // Begin Language Entries
+        foreach ($v2_array as $key => $value) {
+            $lang_block .= '$lang[\'' . trim((string) $key) . '\'] = \'' . trim((string) $value) . '\';';
+            $lang_block .= "\n";
         }
+        set_lang_block($language, $module_id, $lang_block);
     }
+}
+    //rector end
 }
 else if (($add_key != '') && (count($add_new_key) > 0))
 {
     @reset($add_new_key);
-    list($language, $v_array) = each($add_new_key);
-    list($module_id, $value) = each($v_array);
+//rector php8 remove each()
+    $language = key($add_new_key);
+    $v_array = current($add_new_key);
+    next($add_new_key);
+    $module_id = key($v_array);
+    $value = current($v_array);
+    next($v_array);
+//end rector
     
     lang_add_new_key($language, $module_id, $add_key, $add_value);
 }
 else if (count($delete_list) > 0)
 {
     @reset($delete_list);
-    list($language, $v_array) = each($delete_list);
-    list($module_id, $v2_array) = each($v_array);
-    list($key, $value) = each($v2_array);
+//rector php8 remove each()
+    $language = key($delete_list);
+    $v_array = current($delete_list);
+    next($delete_list);
+    $module_id = key($v_array);
+    $v2_array = current($v_array);
+    next($v_array);
+    $key = key($v2_array);
+    $value = current($v2_array);
+    next($v2_array);
+//end rector
 
     delete_lang_key($language, $module_id, $key);
 }

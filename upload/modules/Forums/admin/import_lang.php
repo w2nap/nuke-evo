@@ -132,13 +132,14 @@ if ($mode == 'import_new_lang' && $submit)
         $languages = get_all_installed_languages();
         $inst_langs = array();
         @reset($lang_array);
-        while (list($language, $content) = each($lang_array))
-        {
-            if (!in_array($language, $languages))
-            {
-                $inst_langs[$language] = $content;
-            }
-        }
+        //php8 remove each()
+        foreach ($lang_array as $language => $content) {
+    if (!in_array($language, $languages))
+    {
+        $inst_langs[$language] = $content;
+    }
+}
+        //end php8
 
         if (count($inst_langs) == 0)
         {
@@ -148,11 +149,12 @@ if ($mode == 'import_new_lang' && $submit)
         $lang_array = $inst_langs;
 
         @reset($lang_array);
-        while (list($key, $data) = @each($lang_array))
-        {
-            $modules = get_modules_from_lang_block($data);
-            add_new_language_predefined($key, $modules);
-        }
+       //php8 remove each()
+        foreach ($lang_array as $key => $data) {
+     $modules = get_modules_from_lang_block($data);
+     add_new_language_predefined($key, $modules);
+ }
+       //end
         
         message_die(GENERAL_MESSAGE, $lang['Language_pak_installed']);
     }
@@ -218,13 +220,14 @@ if ($mode == 'import_new_lang' && $submit)
     $languages = get_all_installed_languages();
     $inst_langs = array();
     @reset($lang_array);
-    while (list($language, $content) = each($lang_array))
+    //php8 remove each()
+    foreach ($lang_array as $language => $content) {
+    if (!in_array($language, $languages))
     {
-        if (!in_array($language, $languages))
-        {
-            $inst_langs[$language] = $content;
-        }
+        $inst_langs[$language] = $content;
     }
+}
+    //end php8
 
     if (count($inst_langs) == 0)
     {
@@ -246,23 +249,19 @@ if ($mode == 'import_new_lang' && $submit)
     );
 
     @reset($lang_array);
-    while (list($key, $data) = @each($lang_array))
-    {
-        $language = str_replace('lang_', '', $key);
-
-        $template->assign_block_vars('languages', array(
-            'LANGUAGE' => $language)
+    //php8 remove each()
+    foreach ($lang_array as $key => $data) {
+    $language = str_replace('lang_', '', (string) $key);
+    $template->assign_block_vars('languages', ['LANGUAGE' => $language]
+    );
+    $modules = get_modules_from_lang_block($data);
+    @reset($modules);
+    foreach ($modules as $module_name => $module_data) {
+        $template->assign_block_vars('languages.modules', ['MODULE' => $module_name]
         );
-
-        $modules = get_modules_from_lang_block($data);
-        @reset($modules);
-        while (list($module_name, $module_data) = each($modules))
-        {
-            $template->assign_block_vars('languages.modules', array(
-                'MODULE' => $module_name)
-            );
-        }
     }
+}
+    //end php8
 
     $s_hidden_fields .= '<input type="hidden" name="install_language" value="1">';
 

@@ -138,22 +138,21 @@ include('includes/posting_icons.'. $phpEx);
         $forumsignore = $glance_news_forum_id;
         if ( $num_forums = count($is_auth_ary) )
         {
-            while ( list($forum_id, $auth_mod) = each($is_auth_ary) )
-            {
-                $unauthed = false;
-                if ( !$auth_mod['auth_view'] )
-                {
-                    $unauthed = true;
-                }
-                if ( !$glance_auth_read && !$auth_mod['auth_read'] )
-                {
-                    $unauthed = true;
-                }
-                if ( $unauthed )
-                {
-                    $forumsignore .= ($forumsignore) ? ',' . $forum_id : $forum_id;
-                }
-            }
+            foreach ($is_auth_ary as $forum_id => $auth_mod) {
+    $unauthed = false;
+    if ( !$auth_mod['auth_view'] )
+    {
+        $unauthed = true;
+    }
+    if ( !$glance_auth_read && !$auth_mod['auth_read'] )
+    {
+        $unauthed = true;
+    }
+    if ( $unauthed )
+    {
+        $forumsignore .= ($forumsignore) ? ',' . $forum_id : $forum_id;
+    }
+}
         }
 
         $forumsignore .= ($forumsignore && $glance_recent_ignore) ? ',' : '';

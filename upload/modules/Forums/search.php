@@ -340,11 +340,11 @@ if ($mode == 'searchuser') {
                         }
                         if ($current_match_type == 'and' && $word_count) {
                             @reset($result_list);
-                            while (list($post_id, $match_count) = @each($result_list)) {
-                                if (!$row[$post_id]) {
-                                    $result_list[$post_id] = 0;
-                                }
-                            }
+                            foreach ($result_list as $post_id => $match_count) {
+    if (!$row[$post_id]) {
+        $result_list[$post_id] = 0;
+    }
+}
                         }
                         $word_count++;
                         $db->sql_freeresult($result);
@@ -352,11 +352,11 @@ if ($mode == 'searchuser') {
                 }
                 @reset($result_list);
                 $search_ids = array();
-                while (list($post_id, $matches) = each($result_list)) {
-                    if ($matches) {
-                        $search_ids[] = $post_id;
-                    }
-                }
+                foreach ($result_list as $post_id => $matches) {
+     if ($matches) {
+         $search_ids[] = $post_id;
+     }
+ }
                 unset($result_list);
                 $total_match_count = count($search_ids);
         }
@@ -392,23 +392,23 @@ if ($mode == 'searchuser') {
                 $auth_sql = "f.cat_id = $search_cat";
             }
             $ignore_forum_sql = '';
-            while (list($key, $value) = each($is_auth_ary)) {
-                $has_access = true;
-                if (!$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN) {
-                    $sql = "SELECT forum_password FROM " . FORUMS_TABLE . " WHERE forum_id = " . $key;
-                    if (!$result = $db->sql_query($sql)) {
-                        message_die(GENERAL_ERROR, 'Could not retrieve forum password information', '', __LINE__, __FILE__, $sql);
-                    }
-                    $row = $db->sql_fetchrow($result);
-                    $db->sql_freeresult($result);
-                    if ($row['forum_password'] != '' && $passdata[$key] != md5($row['forum_password'])) {
-                        $has_access = false;
-                    }
-                }
-                if (!$value['auth_read'] || !$has_access) {
-                    $ignore_forum_sql.= (($ignore_forum_sql != '') ? ', ' : '') . $key;
-                }
-            }
+            foreach ($is_auth_ary as $key => $value) {
+    $has_access = true;
+    if (!$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN) {
+        $sql = "SELECT forum_password FROM " . FORUMS_TABLE . " WHERE forum_id = " . $key;
+        if (!$result = $db->sql_query($sql)) {
+            message_die(GENERAL_ERROR, 'Could not retrieve forum password information', '', __LINE__, __FILE__, $sql);
+        }
+        $row = $db->sql_fetchrow($result);
+        $db->sql_freeresult($result);
+        if ($row['forum_password'] != '' && $passdata[$key] != md5((string) $row['forum_password'])) {
+            $has_access = false;
+        }
+    }
+    if (!$value['auth_read'] || !$has_access) {
+        $ignore_forum_sql.= (($ignore_forum_sql != '') ? ', ' : '') . $key;
+    }
+}
             if ($ignore_forum_sql != '') {
                 $auth_sql.= ($auth_sql != '') ? " AND f.forum_id NOT IN ($ignore_forum_sql) " : "f.forum_id NOT IN ($ignore_forum_sql) ";
             }
@@ -1213,9 +1213,9 @@ if ($s_forums != '') {
     // Category to search
     //
     $s_categories = '<option value="-1">' . $lang['All_available'] . '</option>';
-    while (list($cat_id, $cat_title) = @each($list_cat)) {
-        $s_categories.= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
-    }
+    foreach ($list_cat as $cat_id => $cat_title) {
+    $s_categories.= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
+}
 } else {
     message_die(GENERAL_MESSAGE, $lang['No_searchable_forums']);
 }

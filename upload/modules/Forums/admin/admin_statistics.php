@@ -295,15 +295,13 @@ if (($mode == 'mod_install') && ($submit))
     );
 
     @reset($lang_array);
-    while (list($key, $data) = @each($lang_array))
-    {
-        $language = str_replace('lang_', '', $key);
-
-        $template->assign_block_vars('languages', array(
-            'MODULE_LANGUAGE' => $language)
-        );
-
-    }
+    //rector php8 remove each()
+    foreach ($lang_array as $key => $data) {
+    $language = str_replace('lang_', '', (string) $key);
+    $template->assign_block_vars('languages', ['MODULE_LANGUAGE' => $language]
+    );
+}
+    //rector end
 
     $s_hidden_fields .= '<input type="hidden" name="install_module" value="1">';
     if ($update_id != -1)

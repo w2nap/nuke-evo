@@ -636,34 +636,26 @@ $nav_links_html = '';
 
 $nav_link_proto = '<link rel="%s" href="%s" title="%s" />' . "\n";
 
-while( list($nav_item, $nav_array) = @each($nav_links) )
+foreach ($nav_links as $nav_item => $nav_array) {
+    if ( !empty($nav_array['url']) )
 
-{
+    {
 
-        if ( !empty($nav_array['url']) )
+            $nav_links_html .= sprintf($nav_link_proto, $nav_item, append_sid($nav_array['url']), $nav_array['title']);
 
-        {
+    }
 
-                $nav_links_html .= sprintf($nav_link_proto, $nav_item, append_sid($nav_array['url']), $nav_array['title']);
+    else
 
-        }
+    {
 
-        else
+            // We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
 
-        {
+            foreach ($nav_array as $nested_array) {
+                $nav_links_html .= sprintf($nav_link_proto, $nav_item, $nested_array['url'], $nested_array['title']);
+            }
 
-                // We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
-
-                while( list(,$nested_array) = each($nav_array) )
-
-                {
-
-                        $nav_links_html .= sprintf($nav_link_proto, $nav_item, $nested_array['url'], $nested_array['title']);
-
-                }
-
-        }
-
+    }
 }
 
 

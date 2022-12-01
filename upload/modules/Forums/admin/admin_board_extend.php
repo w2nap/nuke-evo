@@ -84,22 +84,23 @@ $sub_sort = array();
 
 // process
 @reset($mods);
-while ( list($menu_name, $menu) = each($mods) )
+foreach ($mods as $menu_name => $menu)
 {
 	// check if there is some config fields in the mods under this menu
 	$found = false;
 
 	// menu
 	@reset($menu['data']);
-	while ( ( list($mod_name, $mod) = @each($menu['data']) ) && !$found )
+	//rector convert PHP8 removed each()
+	while ( !$found )
 	{
 		// sub menu
 		@reset($mod['data']);
-		while ( ( list($sub_name, $sub) = @each($mod['data']) ) && !$found )
+		while ( !$found )
 		{
 			// fields
 			@reset($sub['data']);
-			while ( ( list($field_name, $field) = @each($sub['data']) ) && !$found )
+			while ( !$found )
 			{
 				if ( !isset($field['user_only']) || !$field['user_only'] )
 				{
@@ -107,8 +108,24 @@ while ( list($menu_name, $menu) = each($mods) )
 					break;
 				}
 			}
+   (list($field_name, $field))[1] = current($sub['data']);
+   (list($field_name, $field))['value'] = current($sub['data']);
+   (list($field_name, $field))[0] = key($sub['data']);
+   (list($field_name, $field))['key'] = key($sub['data']);
+   next($sub['data']);
 		}
+  (list($sub_name, $sub))[1] = current($mod['data']);
+  (list($sub_name, $sub))['value'] = current($mod['data']);
+  (list($sub_name, $sub))[0] = key($mod['data']);
+  (list($sub_name, $sub))['key'] = key($mod['data']);
+  next($mod['data']);
 	}
+(list($mod_name, $mod))[1] = current($menu['data']);
+(list($mod_name, $mod))['value'] = current($menu['data']);
+(list($mod_name, $mod))[0] = key($menu['data']);
+(list($mod_name, $mod))['key'] = key($menu['data']);
+next($menu['data']);
+//end rector convert
 
 	// menu ok
 	if ( $found )
@@ -122,60 +139,58 @@ while ( list($menu_name, $menu) = each($mods) )
 		$mod_sort[$i] = array();
 
 		@reset($menu['data']);
-		while ( list($mod_name, $mod) = @each($menu['data']) )
-		{
-			// check if there is some config fields
-			$found = false;
-			@reset($mod['data']);
-			while ( list($sub_name, $sub) = @each($mod['data']) )
-			{
-				@reset($sub['data']);
-				while ( list($field_name, $field) = @each($sub['data']) )
-				{
-					if ( !isset($field['user_only']) || !$field['user_only'] )
-					{
-						$found=true;
-						break;
-					}
-				}
-			}
-			if ($found)
-			{
-				$j = count($mod_keys[$i]);
-				$mod_keys[$i][$j] = $mod_name;
-				$mod_sort[$i][$j] = $mod['sort'];
-
-				// init sub levels
-				$sub_keys[$i][$j] = array();
-				$sub_sort[$i][$j] = array();
-
-				// sub names
-				@reset($mod['data']);
-				while ( list($sub_name, $sub) = @each($mod['data']) )
-				{
-					if ( !empty($sub_name) )
-					{
-						// check if there is some config fields in this level
-						$found = false;
-						@reset($sub['data']);
-						while ( list($field_name, $field) = @each($sub['data']) )
-						{
-							if ( !isset($field['user_only']) || !$field['user_only'] )
-							{
-								$found=true;
-								break;
-							}
-						}
-						if ($found)
-						{
-							$sub_keys[$i][$j][] = $sub_name;
-							$sub_sort[$i][$j][] = $sub['sort'];
-						}
-					}
-				}
-				@array_multisort($sub_sort[$i][$j], $sub_keys[$i][$j]);
-			}
-		}
+//rector php8 convert remove each()
+		foreach ($menu['data'] as $mod_name => $mod) {
+      // check if there is some config fields
+      $found = false;
+      @reset($mod['data']);
+      foreach ($mod['data'] as $sub_name => $sub) {
+          @reset($sub['data']);
+          foreach ($sub['data'] as $field_name => $field) {
+              if ( !isset($field['user_only']) || !$field['user_only'] )
+         					{
+         						$found=true;
+         						break;
+         					}
+          }
+      }
+      if ($found)
+   			{
+   				$j = is_countable($mod_keys[$i]) ? count($mod_keys[$i]) : 0;
+   				$mod_keys[$i][$j] = $mod_name;
+   				$mod_sort[$i][$j] = $mod['sort'];
+   
+   				// init sub levels
+   				$sub_keys[$i][$j] = [];
+   				$sub_sort[$i][$j] = [];
+   
+   				// sub names
+   				@reset($mod['data']);
+   				foreach ($mod['data'] as $sub_name => $sub) {
+           if ( !empty($sub_name) )
+      					{
+      						// check if there is some config fields in this level
+      						$found = false;
+      						@reset($sub['data']);
+      						while ( [$field_name, $field] = @each($sub['data']) )
+      						{
+      							if ( !isset($field['user_only']) || !$field['user_only'] )
+      							{
+      								$found=true;
+      								break;
+      							}
+      						}
+      						if ($found)
+      						{
+      							$sub_keys[$i][$j][] = $sub_name;
+      							$sub_sort[$i][$j][] = $sub['sort'];
+      						}
+      					}
+       }
+   				@array_multisort($sub_sort[$i][$j], $sub_keys[$i][$j]);
+   			}
+  }
+//rector convert end
 		@array_multisort($mod_sort[$i], $mod_keys[$i], $sub_sort[$i], $sub_keys[$i]);
 	}
 }
@@ -229,7 +244,8 @@ if ($submit)
 
 	// format and verify data
 	@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+//rector php8 convert remove each() failed with error. will break with php8
+	while ( list($field_name, $field) = each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
 	{
 		if (isset($HTTP_POST_VARS[$field_name]))
 		{
@@ -279,35 +295,36 @@ if ($submit)
 			}
 		}
 	}
+//rector convert end
 
 	// save data
 	@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
-	{
-		if (isset($$field_name))
-		{
-			// update
-			$sql = "UPDATE " . CONFIG_TABLE . " 
-					SET config_value = '" . $$field_name . "'
+	//rector convert php8 remove each()
+foreach ($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $field_name => $field) {
+    if (isset(${$field_name}))
+  		{
+  			// update
+  			$sql = "UPDATE " . CONFIG_TABLE . " 
+					SET config_value = '" . ${$field_name} . "'
 					WHERE config_name = '" . $field_name . "'";
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
-			}
-		}
-		if ( isset($HTTP_POST_VARS[$field_name . '_over']) && !empty($field['user']) && isset($userdata[ $field['user'] ]) )
-		{
-			// update
-			$sql = "UPDATE " . CONFIG_TABLE . " 
-					SET config_value = '" . intval($HTTP_POST_VARS[$field_name . '_over']) . "'
+  			if ( !$db->sql_query($sql) )
+  			{
+  				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
+  			}
+  		}
+    if ( isset($_POST[$field_name . '_over']) && !empty($field['user']) && isset($userdata[ $field['user'] ]) )
+  		{
+  			// update
+  			$sql = "UPDATE " . CONFIG_TABLE . " 
+					SET config_value = '" . intval($_POST[$field_name . '_over']) . "'
 					WHERE config_name = '$field_name" . "_over'";
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
-			}
-		}
-	}
-
+  			if ( !$db->sql_query($sql) )
+  			{
+  				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
+  			}
+  		}
+}
+	//rector end
 	// send an update message
 	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("./index.$phpEx?pane=right") . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
@@ -396,7 +413,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 
 // send items
 @reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+foreach ($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $field_name => $field)
 {
 	// get the field input statement
 	$input = '';
@@ -404,21 +421,23 @@ while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['
 	{
 		case 'LIST_RADIO':
 			@reset($field['values']);
-			while ( list($key, $val) = @each($field['values']) )
-			{
-				$selected = ($config[$field_name] == $val) ? ' checked="checked"' : '';
-				$l_key = mods_settings_get_lang($key);
-				$input .= '<input type="radio" name="' . $field_name . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
-			}
+			//rector convert php8 remove each()
+			foreach ($field['values'] as $key => $val) {
+    $selected = ($config[$field_name] == $val) ? ' checked="checked"' : '';
+    $l_key = mods_settings_get_lang($key);
+    $input .= '<input type="radio" name="' . $field_name . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
+}
+//rector convert end.
 			break;
 		case 'LIST_DROP':
 			@reset($field['values']);
-			while ( list($key, $val) = @each($field['values']) )
-			{
-				$selected = ($config[$field_name] == $val) ? ' selected="selected"' : '';
-				$l_key = mods_settings_get_lang($key);
-				$input .= '<option value="' . $val . '"' . $selected . '>' . $l_key . '</option>';
-			}
+			//rector convert php8 remove each()
+			foreach ($field['values'] as $key => $val) {
+    $selected = ($config[$field_name] == $val) ? ' selected="selected"' : '';
+    $l_key = mods_settings_get_lang($key);
+    $input .= '<option value="' . $val . '"' . $selected . '>' . $l_key . '</option>';
+}
+			//rector convert end.
 			$input = '<select name="' . $field_name . '">' . $input . '</select>';
 			break;
 		case 'TINYINT':
@@ -456,12 +475,13 @@ while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['
 	{
 		$override = '';
 		@reset($list_yes_no);
-		while ( list($key, $val) = @each($list_yes_no) )
-		{
-			$selected = ($config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
-			$l_key = mods_settings_get_lang($key);
-			$override .= '<input type="radio" name="' . $field_name . '_over' . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
-		}
+		//rector convert php8 remove each()
+		foreach ($list_yes_no as $key => $val) {
+    $selected = ($config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
+    $l_key = mods_settings_get_lang($key);
+    $override .= '<input type="radio" name="' . $field_name . '_over' . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
+}
+		//rector end
 		$override = '<hr />' . $lang['Override_user_choices'] . ':&nbsp;'. $override;
 	}
 

@@ -438,13 +438,12 @@ function get_forums_auth_mod()
     // create an array to store the moderated forums
     $forums_auth = array();
 
-    while ( list($forum) = each($auth) )
+    foreach (array_keys($auth) as $forum) {
+    if ( $auth[$forum]['auth_mod'] )
     {
-        if ( $auth[$forum]['auth_mod'] )
-        {
-            $forums_auth[] = $forum;
-        }
+        $forums_auth[] = $forum;
     }
+}
 
     return $forums_auth;
 }

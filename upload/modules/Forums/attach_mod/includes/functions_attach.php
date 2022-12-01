@@ -941,7 +941,11 @@ function get_var($var_name, $default, $multibyte = false)
     }
     else
     {
-        list($key_type, $type) = each($default);
+        //php8 remove each()
+        $key_type = key($default);
+$type = current($default);
+next($default);
+        //php8 end
         $type = gettype($type);
         $key_type = gettype($key_type);
     }

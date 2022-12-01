@@ -106,75 +106,67 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
 
     // Write Language File
     @reset($lang_array);
-    while (list($key, $data) = @each($lang_array))
+    //php8 remove each()
+    foreach ($lang_array as $key => $data) {
+    $language = trim((string) $key);
+    $language_dir = $phpbb_root_path . 'modules/language';
+    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    if (!file_exists($language_dir))
     {
-        $language = trim($key);
-        $language_dir = $phpbb_root_path . 'modules/language';
-        $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
-
-        if (!file_exists($language_dir))
-        {
-            @umask(0);
-            mkdir($language_dir, $directory_mode);
-        }
-        else
-        {
-            chmod($language_dir, $directory_mode);
-        }
-        
-        if (!file_exists($language_dir . '/' . $language))
-        {
-            @umask(0);
-            mkdir($language_dir . '/' . $language, $directory_mode);
-        }
-        else
-        {
-            chmod($language_dir . '/' . $language, $directory_mode);
-        }
-        
-        if (!file_exists($language_file))
-        {
-            $contents = "<?php
+        @umask(0);
+        mkdir($language_dir, $directory_mode);
+    }
+    else
+    {
+        chmod($language_dir, $directory_mode);
+    }
+    if (!file_exists($language_dir . '/' . $language))
+    {
+        @umask(0);
+        mkdir($language_dir . '/' . $language, $directory_mode);
+    }
+    else
+    {
+        chmod($language_dir . '/' . $language, $directory_mode);
+    }
+    if (!file_exists($language_file))
+    {
+        $contents = "<?php
 /*=======================================================================
  Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
-        }
-        else
-        {
-            chmod($language_file, $file_mode);
-            $contents = implode('', @file($language_file));
-            
-            if ($module_id != -1)
-            {
-                $contents = delete_language_block($contents, $short_name);
-            }
-        }
-        
-        $contents = str_replace('?>', '', $contents);
-        $contents = trim($contents) . "\n";
-
-        // add the BEGIN
-        $contents .= "\n// [" . $short_name . "]\n";
-        $contents .= "\$" . $short_name . " = array();\n\n";
-        // add the language file
-        $contents = $contents . str_replace('$lang', '$' . $short_name, $data) . "\n";
-        // add the END and closing tag
-        $contents .= "// [/" . $short_name . "]\n\n";
-        $contents .= "?>";
-
-        if (!($fp = fopen($language_file, 'wt')))
-        {
-            message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
-        }
-
-        fwrite($fp, $contents, strlen($contents));
-        fclose($fp);
-
-        chmod($language_file, $file_mode);
-        chmod($language_dir . '/' . $language, $directory_mode);
-        chmod($language_dir, $directory_mode);
     }
-
+    else
+    {
+        chmod($language_file, $file_mode);
+        $contents = implode('', @file($language_file));
+        
+        if ($module_id != -1)
+        {
+            $contents = delete_language_block($contents, $short_name);
+        }
+    }
+    $contents = str_replace('?>', '', (string) $contents);
+    $contents = trim($contents) . "\n";
+    // add the BEGIN
+    $contents .= "\n// [" . $short_name . "]\n";
+    $contents .= "\$" . $short_name . " = array();\n\n";
+    // add the language file
+    $contents = $contents . str_replace('$lang', '$' . $short_name, (string) $data) . "\n";
+    // add the END and closing tag
+    $contents .= "// [/" . $short_name . "]\n\n";
+    $contents .= "?>";
+    if (!($fp = fopen($language_file, 'wt')))
+    {
+        message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+    }
+    fwrite($fp, $contents, strlen($contents));
+    fclose($fp);
+    chmod($language_file, $file_mode);
+    chmod($language_dir . '/' . $language, $directory_mode);
+    chmod($language_dir, $directory_mode);
+}
+//php8 end
     // If we have not quit yet, let us add the info to the database too. ;)
     $add_info_array = array(
         'long_name' => 'name', 
@@ -269,28 +261,28 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     $keys = '';
     $values = '';
     @reset($add_info_array);
-    while (list($key, $value) = @each($add_info_array))
+    //php8 remove each()
+    foreach ($add_info_array as $key => $value) {
+    if (!isset($info_array[$value]))
     {
-        if (!isset($info_array[$value]))
+        $info_bit = '';
+    }
+    else
+    {
+        if ($value == 'extra_info')
         {
-            $info_bit = '';
+            $info_bit = trim((string) $info_array[$value]);
         }
         else
         {
-            if ($value == 'extra_info')
-            {
-                $info_bit = trim($info_array[$value]);
-            }
-            else
-            {
-                $info_bit = explode("\n", $info_array[$value]);
-                $info_bit = trim($info_bit[0]);
-            }
+            $info_bit = explode("\n", (string) $info_array[$value]);
+            $info_bit = trim($info_bit[0]);
         }
-    
-        $keys .= ', ' . $key;
-        $values .= ', \'' . sql_quote(htmlspecialchars($info_bit)) . '\'';
     }
+    $keys .= ', ' . $key;
+    $values .= ', \'' . sql_quote(htmlspecialchars($info_bit)) . '\'';
+}
+    //end php8
 
     if (($keys == '') || ($values == ''))
     {

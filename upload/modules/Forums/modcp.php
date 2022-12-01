@@ -110,7 +110,7 @@ if (isset($_REQUEST['mode']) && is_array($_REQUEST['mode']))
 
 	$mode = request_var('mode', array(''));
 
-	list($mode, ) = each($mode);
+	$mode = key($mode);
 
 }
 
@@ -254,7 +254,7 @@ if (isset($_REQUEST['sid']) && is_array($_REQUEST['sid']))
 
 	$sid = request_var('sid', array(''));
 
-	list($sid, ) = each($sid);
+	$sid = key($sid);
 
 }
 

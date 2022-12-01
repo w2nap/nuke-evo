@@ -85,11 +85,10 @@ function tz_select($default, $select_name = 'timezone')
         }
         $tz_select = '<select name="user_timezone">';
 
-        while( list($offset, $zone) = @each($lang['tz']) )
-        {
-                $selected = ( $offset == $default ) ? ' selected="selected"' : '';
-                $tz_select .= '<option value="' . $offset . '"' . $selected . '>' . str_replace('GMT', 'UTC', $zone) . '</option>';
-        }
+        foreach ($lang['tz'] as $offset => $zone) {
+    $selected = ( $offset == $default ) ? ' selected="selected"' : '';
+    $tz_select .= '<option value="' . $offset . '"' . $selected . '>' . str_replace('GMT', 'UTC', (string) $zone) . '</option>';
+}
         $tz_select .= '</select>';
 
         return $tz_select;
@@ -178,7 +177,7 @@ function tz_select($default, $select_name = 'timezone')
  [ Mod:     XData                              v0.1.1 ]
  ******************************************************/
     $xd_meta = get_xd_metadata();
-    while ( list($code_name, $info) = each($xd_meta) )
+    foreach ($xd_meta as $code_name => $info)
     {
             if ($info['display_register'] == XD_DISPLAY_NORMAL && $info['signup'])
             {
@@ -201,7 +200,7 @@ function tz_select($default, $select_name = 'timezone')
 
                     case 'radio':
                         echo '<tr><td bgcolor="'.$bgcolor2.'"><div class="textbold">'.$info['field_name'].':</div>'.$info['field_desc'].'</td><td bgcolor="'.$bgcolor1.'">';
-                        while ( list( , $option) = each($info['values_array']) )
+                        foreach ($info['values_array'] as $option)
                         {
                             $select = ($xdata[$code_name] == $option) ? 'selected="selected"' : '';
                             echo '<input type="radio" name="'.$code_name.'" value="'.$option.'" '.$select.' /> <span class="gen">'.$option.'</span><br />';
@@ -212,7 +211,7 @@ function tz_select($default, $select_name = 'timezone')
                     case 'select':
                         echo '<tr><td bgcolor="'.$bgcolor2.'"><div class="textbold">'.$info['field_name'].':</div>'.$info['field_desc'].'</td><td bgcolor="'.$bgcolor1.'">';
                         echo '<select name="'.$code_name.'">';
-                        while ( list( , $option) = each($info['values_array']) )
+                        foreach ($info['values_array'] as $option)
                         {
                             $select = ($xdata[$code_name] == $option) ? 'selected="selected"' : '';
                             echo '<option value="'.$option.'" '.$select.'>'.$option.'</option>';

@@ -273,24 +273,24 @@ else
         $forum_name = $forum_rows[0]['forum_name'];
 
         @reset($simple_auth_ary);
-        while( list($key, $auth_levels) = each($simple_auth_ary))
-        {
-                $matched = 1;
-                for($k = 0; $k < count($auth_levels); $k++)
-                {
-                        $matched_type = $key;
+        //rector php8 remove each()
+        foreach ($simple_auth_ary as $key => $auth_levels) {
+    $matched = 1;
+    for($k = 0; $k < (is_countable($auth_levels) ? count($auth_levels) : 0); $k++)
+    {
+            $matched_type = $key;
 
-                        if ( $forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k] )
-                        {
-                                $matched = 0;
-                        }
-                }
-
-                if ( $matched )
-                {
-                        break;
-                }
-        }
+            if ( $forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k] )
+            {
+                    $matched = 0;
+            }
+    }
+    if ( $matched )
+    {
+            break;
+    }
+}
+        //rector end
 
         //
         // If we didn't get a match above then we

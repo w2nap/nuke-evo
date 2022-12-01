@@ -1832,9 +1832,8 @@ if( $total_forums )
 					if ( !empty($new_topic_data[$subforum_id]) )
 					{
 						$subforum_last_post_time = 0;
-						while( list($check_topic_id, $check_post_time) = @each($new_topic_data[$subforum_id]) )
-						{
-							if ( empty($tracking_topics[$check_topic_id]) )
+						foreach ($new_topic_data[$subforum_id] as $check_topic_id => $check_post_time) {
+    if ( empty($tracking_topics[$check_topic_id]) )
 							{
 								$unread_topics = true;
 								$subforum_last_post_time = max($check_post_time, $subforum_last_post_time);
@@ -1847,7 +1846,7 @@ if( $total_forums )
 									$subforum_last_post_time = max($check_post_time, $subforum_last_post_time);
 								}
 							}
-						}
+}
 
 						if ( !empty($tracking_forums[$subforum_id]) )
 						{

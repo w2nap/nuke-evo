@@ -1236,41 +1236,35 @@ else if ( ( $delete && $mark_list ) || $delete_all )
 
                                         if (count($update_users))
                                         {
-                                                while (list($type, $users) = each($update_users))
-                                                {
-                                                        while (list($user_id, $dec) = each($users))
-                                                        {
-                                                                $update_list[$type][$dec][] = $user_id;
-                                                        }
-                                                }
+                                                foreach ($update_users as $type => $users) {
+													foreach ($users as $user_id => $dec) {
+													$update_list[$type][$dec][] = $user_id;
+													}
+												}
                                                 unset($update_users);
 
-                                                while (list($type, $dec_ary) = each($update_list))
-                                                {
-                                                        switch ($type)
-                                                        {
-                                                                case 'new':
-                                                                        $type = "user_new_privmsg";
-                                                                        break;
+                                                foreach ($update_list as $type => $dec_ary) {
+													switch ($type)
+														{
+															case 'new':
+																$type = "user_new_privmsg";
+															break;
 
-                                                                case 'unread':
-                                                                        $type = "user_unread_privmsg";
-                                                                        break;
-                                                        }
-
-                                                        while (list($dec, $user_ary) = each($dec_ary))
-                                                        {
-                                                                $user_ids = implode(', ', $user_ary);
-
-                                                                $sql = "UPDATE " . USERS_TABLE . "
+															case 'unread':
+																$type = "user_unread_privmsg";
+															break;
+														}
+												foreach ($dec_ary as $dec => $user_ary) {
+															$user_ids = implode(', ', $user_ary);
+																		$sql = "UPDATE " . USERS_TABLE . "
                                                                         SET $type = $type - $dec
                                                                         WHERE user_id IN ($user_ids)";
-                                                                if ( !$db->sql_query($sql) )
-                                                                {
-                                                                        message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
-                                                                }
-                                                        }
-                                                }
+													if ( !$db->sql_query($sql) )
+														{
+													message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
+													}
+												}
+											}
                                                 unset($update_list);
                                         }
                                 }
@@ -1435,41 +1429,35 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
 
                                 if (count($update_users))
                                 {
-                                        while (list($type, $users) = each($update_users))
-                                        {
-                                                while (list($user_id, $dec) = each($users))
-                                                {
-                                                        $update_list[$type][$dec][] = $user_id;
-                                                }
-                                        }
+                                        foreach ($update_users as $type => $users) {
+    foreach ($users as $user_id => $dec) {
+        $update_list[$type][$dec][] = $user_id;
+    }
+}
                                         unset($update_users);
 
-                                        while (list($type, $dec_ary) = each($update_list))
-                                        {
-                                                switch ($type)
-                                                {
-                                                        case 'new':
-                                                                $type = "user_new_privmsg";
-                                                                break;
+                                        foreach ($update_list as $type => $dec_ary) {
+    switch ($type)
+    {
+            case 'new':
+                    $type = "user_new_privmsg";
+                    break;
 
-                                                        case 'unread':
-                                                                $type = "user_unread_privmsg";
-                                                                break;
-                                                }
-
-                                                while (list($dec, $user_ary) = each($dec_ary))
-                                                {
-                                                        $user_ids = implode(', ', $user_ary);
-
-                                                        $sql = "UPDATE " . USERS_TABLE . "
+            case 'unread':
+                    $type = "user_unread_privmsg";
+                    break;
+    }
+    foreach ($dec_ary as $dec => $user_ary) {
+        $user_ids = implode(', ', $user_ary);
+        $sql = "UPDATE " . USERS_TABLE . "
                                                                 SET $type = $type - $dec
                                                                 WHERE user_id IN ($user_ids)";
-                                                        if ( !$db->sql_query($sql) )
-                                                        {
-                                                                message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
-                                                        }
-                                                }
-                                        }
+        if ( !$db->sql_query($sql) )
+        {
+                message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
+        }
+    }
+}
                                         unset($update_list);
                                 }
                         }

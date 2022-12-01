@@ -137,20 +137,23 @@ class Content_bars
 
         @reset($data);
         $i = 0;
-        while (list($key, $value) = each($data))
-        {
-            // check pre-defined value
-            if (is_array($value))
-            {
-                list($this->column_data[$i]['key'], $this->column_data[$i]['value']) = each($value);
-            }
-            else
-            {
-                $this->column_data[$i]['key'] = $key;
-                $this->column_data[$i]['value'] = $value;
-            }
-            $i++;
-        }
+        //php8 remove each()
+        foreach ($data as $key => $value) {
+    // check pre-defined value
+    if (is_array($value))
+    {
+        $this->column_data[$i]['key'] = key($value);
+        $this->column_data[$i]['value'] = current($value);
+        next($value);
+    }
+    else
+    {
+        $this->column_data[$i]['key'] = $key;
+        $this->column_data[$i]['value'] = $value;
+    }
+    $i++;
+}
+        //php8 end
 
         $stats_template->assign_vars(array(
             'NUM_COLUMNS' => $this->columns)

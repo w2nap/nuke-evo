@@ -660,23 +660,16 @@ if ($mode == 'view')
 	}
 	else
 	{
-		while ( list($code_name, $meta) = each($xd_meta) )
-		{
-        	$template->assign_block_vars('xd_field', array(
-				'FIELD_NAME' => $meta['field_name'],
-				'FIELD_TYPE' => $meta['field_type'],
-				'U_MOVE_UP' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=up&name='.$code_name),
-				'U_MOVE_DOWN' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=down&name='.$code_name),
-				'U_EDIT' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=edit&name='.$code_name),
-				'U_DELETE' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=delete&name='.$code_name),
-        		)
-        	);
-
-        	if ($meta['field_type'] != 'special')
+		//php8 remove each()
+		foreach ($xd_meta as $code_name => $meta) {
+    $template->assign_block_vars('xd_field', ['FIELD_NAME' => $meta['field_name'], 'FIELD_TYPE' => $meta['field_type'], 'U_MOVE_UP' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=up&name='.$code_name), 'U_MOVE_DOWN' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=down&name='.$code_name), 'U_EDIT' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=edit&name='.$code_name), 'U_DELETE' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=delete&name='.$code_name)]
+   	);
+    if ($meta['field_type'] != 'special')
 			{
-				$template->assign_block_vars('xd_field.normal', array());
+				$template->assign_block_vars('xd_field.normal', []);
 			}
-  		}
+}
+		//end php8 edit
 	}
 
 	$template->assign_vars(array(

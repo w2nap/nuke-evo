@@ -362,7 +362,7 @@ function parse_info_file($content)
     $block_name = '';
     $content = explode("\n", $content);
 
-    while (list($key, $data) = @each($content))
+    foreach ($content as $key => $data)
     {
         if (!$in_block)
         {
@@ -464,14 +464,14 @@ function parse_lang_file($content, $only_languages = array())
 
     $choose_lang = (count($only_languages) == 0) ? FALSE : TRUE;
 
-    while (list($key, $data) = @each($content))
-    {
+//php8 remove each()
+    foreach ($content as $key => $data) {
         if (!$in_block)
         {
-            if (preg_match("/(.*?)\[lang_(.*?)\]/", $data))
+            if (preg_match("/(.*?)\[lang_(.*?)\]/", (string) $data))
             {
                 $in_block = TRUE;
-                $block_name = preg_replace("/(.*?)\[(.*?)\]/", "\\2", $data);
+                $block_name = preg_replace("/(.*?)\[(.*?)\]/", "\\2", (string) $data);
                 $block_name = trim($block_name);
                 if ($choose_lang)
                 {
@@ -488,7 +488,7 @@ function parse_lang_file($content, $only_languages = array())
         }
         else
         {
-            if (preg_match("/\[\/" . preg_quote($block_name) . "\]/", $data))
+            if (preg_match("/\[\/" . preg_quote((string) $block_name) . "\]/", (string) $data))
             {
                 $in_block = FALSE;
             }
@@ -502,7 +502,7 @@ function parse_lang_file($content, $only_languages = array())
                         {
                             $ret_array[$block_name] .= "\n";
                         }
-                        $ret_array[$block_name] .= trim($data);
+                        $ret_array[$block_name] .= trim((string) $data);
                     }
                 }
                 else
@@ -511,11 +511,12 @@ function parse_lang_file($content, $only_languages = array())
                     {
                         $ret_array[$block_name] .= "\n";
                     }
-                    $ret_array[$block_name] .= trim($data);
+                    $ret_array[$block_name] .= trim((string) $data);
                 }
             }
         }
     }
+//end php8
 
     return $ret_array;
 }

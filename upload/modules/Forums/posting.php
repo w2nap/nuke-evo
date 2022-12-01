@@ -1853,17 +1853,16 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 		$poll_options = array();
 		if ( !empty($HTTP_POST_VARS['poll_option_text']) )
 		{
-				while( list($option_id, $option_text) = @each($HTTP_POST_VARS['poll_option_text']) )
-				{
-						if( isset($HTTP_POST_VARS['del_poll_option'][$option_id]) )
+				foreach ($_POST['poll_option_text'] as $option_id => $option_text) {
+    if( isset($_POST['del_poll_option'][$option_id]) )
 						{
 								unset($poll_options[$option_id]);
 						}
 						else if ( !empty($option_text) )
 						{
-								$poll_options[intval($option_id)] = htmlspecialchars(trim(stripslashes($option_text)));
+								$poll_options[intval($option_id)] = htmlspecialchars(trim(stripslashes((string) $option_text)));
 						}
-				}
+}
 		}
 
 		if ( isset($poll_add) && !empty($HTTP_POST_VARS['add_poll_option_text']) )
@@ -2743,14 +2742,10 @@ if( ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['edit_poll']) )
 
 		if( !empty($poll_options) )
 		{
-				while( list($option_id, $option_text) = each($poll_options) )
-				{
-						$template->assign_block_vars('poll_option_rows', array(
-								'POLL_OPTION' => str_replace('"', '&quot;', $option_text),
-
-								'S_POLL_OPTION_NUM' => $option_id)
+				foreach ($poll_options as $option_id => $option_text) {
+    $template->assign_block_vars('poll_option_rows', ['POLL_OPTION' => str_replace('"', '&quot;', (string) $option_text), 'S_POLL_OPTION_NUM' => $option_id]
 						);
-				}
+}
 		}
 
 		$template->assign_var_from_handle('POLLBOX', 'pollbody');

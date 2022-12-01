@@ -169,60 +169,52 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 /*****[END]********************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
  ******************************************************/
- while( list($cat, $action_array) = each($module) )
-{
-    $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", $cat);
-
-    $template->assign_block_vars("catrow", array(
-
-/*****[BEGIN]******************************************
- [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
- ******************************************************/
-                    "MENU_CAT_ID" => $menu_cat_id,
-                    "MENU_CAT_ROWS" => count($action_array),
-/*****[END]********************************************
- [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
- ******************************************************/
-
-                     "ADMIN_CATEGORY" => $cat)
+ //php8 remove each()
+ foreach ($module as $cat => $action_array) {
+    $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", (string) $cat);
+    $template->assign_block_vars("catrow", [
+        /*****[BEGIN]******************************************
+         [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
+         ******************************************************/
+        "MENU_CAT_ID" => $menu_cat_id,
+        "MENU_CAT_ROWS" => is_countable($action_array) ? count($action_array) : 0,
+        /*****[END]********************************************
+         [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
+         ******************************************************/
+        "ADMIN_CATEGORY" => $cat,
+    ]
     );
-
     ksort($action_array);
-
     $row_count = 0;
-    while( list($action, $file)   = each($action_array) )
-    {
+    foreach ($action_array as $action => $file) {
         $row_color = ( !($row_count%2) ) ? $theme['td_color1'] : $theme['td_color2'];
         $row_class = ( !($row_count%2) ) ? $theme['td_class1'] : $theme['td_class2'];
-
-        $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", $action);
-
-        $template->assign_block_vars("catrow.modulerow", array(
-
-/*****[BEGIN]******************************************
- [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
- ******************************************************/
+        $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", (string) $action);
+        $template->assign_block_vars("catrow.modulerow", [
+            /*****[BEGIN]******************************************
+             [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
+             ******************************************************/
             "ROW_COUNT" => $row_count,
-/*****[END]********************************************
- [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
- ******************************************************/
-
-             "ROW_COLOR" => "#" . $row_color,
+            /*****[END]********************************************
+             [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
+             ******************************************************/
+            "ROW_COLOR" => "#" . $row_color,
             "ROW_CLASS" => $row_class,
-
             "ADMIN_MODULE" => $action,
-            "U_ADMIN_MODULE" => append_sid($file))
+            "U_ADMIN_MODULE" => append_sid($file),
+        ]
         );
         $row_count++;
     }
-/*****[BEGIN]******************************************
- [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
- ******************************************************/
+    /*****[BEGIN]******************************************
+     [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
+     ******************************************************/
     $menu_cat_id++;
-/*****[END]********************************************
- [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
- ******************************************************/
+    /*****[END]********************************************
+     [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
+     ******************************************************/
 }
+//end php8
         $template->pparse("body");
 
         include('./page_footer_admin.'.$phpEx);

@@ -113,15 +113,12 @@ function icons_write()
 
 	// process the default values
 	@reset($icon_defined_special);
-	while (list($key, $data) = @each($icon_defined_special))
-	{
-		$template->assign_block_vars('_outfile_default', array(
-			'NAME'		=> str_replace("''", "\'", $key),
-			'LANG_KEY'	=> str_replace("''", "\'", $data['lang_key']),
-			'ICON'		=> empty($data['icon']) ? 0 : $data['icon'],
-			)
-		);
-	}
+	//rector php8 remove each()
+	foreach ($icon_defined_special as $key => $data) {
+    $template->assign_block_vars('_outfile_default', ['NAME'		=> str_replace("''", "\'", (string) $key), 'LANG_KEY'	=> str_replace("''", "\'", (string) $data['lang_key']), 'ICON'		=> empty($data['icon']) ? 0 : $data['icon']]
+  		);
+}
+	//rector end
 
 	// generate a var for the content
 	$file_data = '_file_data';
@@ -411,16 +408,17 @@ if ($mode == 'edit')
 		$icon_url		= $icones[ $map_icon[$icon] ]['img'];
 		$icon_auth		= $icones[ $map_icon[$icon] ]['auth'];
 		@reset($icon_defined_special);
-		while (list($key, $data) = @each($icon_defined_special))
-		{
-			if (isset($lang[ $data['lang_key'] ]))
-			{
-				if ($icon_defined_special[$key]['icon'] == $icon)
-				{
-					$icon_ids[] = $key;
-				}
-			}
-		}
+		//rector php8 remove each()
+		foreach ($icon_defined_special as $key => $data) {
+    if (isset($lang[ $data['lang_key'] ]))
+ 			{
+ 				if ($icon_defined_special[$key]['icon'] == $icon)
+ 				{
+ 					$icon_ids[] = $key;
+ 				}
+ 			}
+}
+		//rector end
 	}
 
 	// read the formular
@@ -488,24 +486,24 @@ if ($mode == 'edit')
 
 		// consider the default sets
 		@reset($icon_defined_special);
-		while (list($key, $data) = @each($icon_defined_special))
-		{
-			if (isset($lang[ $data['lang_key'] ]))
-			{
-				// reset a prec value
-				if ($icon_defined_special[$key]['icon'] == $icon)
-				{
-					$icon_defined_special[$key]['icon'] = '';
-				}
-
-				// set the new values
-				if ( @in_array($key, $icon_ids) )
-				{
-					$icon_defined_special[$key]['icon'] = $icon;
-				}
-			}
-		}
-
+		//rector php8 remove each()
+		foreach ($icon_defined_special as $key => $data) {
+    if (isset($lang[ $data['lang_key'] ]))
+ 			{
+ 				// reset a prec value
+ 				if ($icon_defined_special[$key]['icon'] == $icon)
+ 				{
+ 					$icon_defined_special[$key]['icon'] = '';
+ 				}
+ 
+ 				// set the new values
+ 				if ( @in_array($key, $icon_ids) )
+ 				{
+ 					$icon_defined_special[$key]['icon'] = $icon;
+ 				}
+ 			}
+}
+		//rector end
 		// generate the file
 		icons_write();
 		icons_read();
@@ -559,37 +557,40 @@ if ($mode == 'edit')
 		// prepare auth level list
 		$s_auths = '';
 		@reset($auths);
-		while (list($key, $data) = @each($auths))
-		{
-			$selected = ($icon_auth == $key) ? ' selected="selected"' : '';
-			$s_auths .= sprintf('<option value="%s"%s>%s</option>', $key, $selected, $data);
-		}
+		//rector php8 remove each()
+		foreach ($auths as $key => $data) {
+    $selected = ($icon_auth == $key) ? ' selected="selected"' : '';
+    $s_auths .= sprintf('<option value="%s"%s>%s</option>', $key, $selected, $data);
+}
+		//rector end
 		$s_auths = sprintf('<select name="icon_auth">%s</select>', $s_auths);
 
 		// images list
 		$s_icons = '<option value="" selected="selected">' . $lang['Image_key_pick_up'] . '</option>';
 		@ksort($images);
 		@reset($images);
-		while ( list($image_key, $image_url) = @each($images) )
-		{
-			if ( !is_array($image_url) )
-			{
-				$s_icons .= '<option value="' . $image_key . '">' . $image_key . '</option>';
-			}
-		}
+		//rector php8 remove each()
+		foreach ($images as $image_key => $image_url) {
+    if ( !is_array($image_url) )
+ 			{
+ 				$s_icons .= '<option value="' . $image_key . '">' . $image_key . '</option>';
+ 			}
+}
+		//rector end
 		$s_icons = '<select name="icon_url_pickup_list" onChange="javascript:icon_url.value=this.options[this.selectedIndex].value; this.selectedIndex=0;">' . $s_icons . '</select>';
 
 		// lang keys list
 		$s_langs = '<option value="" selected="selected">' . $lang['Lang_key_pick_up'] . '</option>';
 		@ksort($lang);
 		@reset($lang);
-		while ( list($lang_key, $lang_data) = @each($lang) )
-		{
-			if ( !is_array($lang_data) )
-			{
-				$s_langs .= '<option value="' . $lang_key . '">' . $lang_key . '</option>';
-			}
-		}
+		//rector php8 remove each()
+		foreach ($lang as $lang_key => $lang_data) {
+    if ( !is_array($lang_data) )
+ 			{
+ 				$s_langs .= '<option value="' . $lang_key . '">' . $lang_key . '</option>';
+ 			}
+}
+		//end rector
 		$s_langs = '<select name="lang_key_pickup_list" onChange="javascript:icon_title.value=this.options[this.selectedIndex].value; this.selectedIndex=0;">' . $s_langs . '</select>';
 
 		// vars
@@ -606,18 +607,15 @@ if ($mode == 'edit')
 
 		// defaults assignments
 		@reset($icon_defined_special);
-		while (list($key, $data) = @each($icon_defined_special))
-		{
-			if (isset($lang[ $data['lang_key'] ]))
-			{
-				$template->assign_block_vars('defaults', array(
-					'NAME'		=> $lang[ $data['lang_key'] ],
-					'ID'		=> $key,
-					'CHECKED'	=> @in_array($key, $icon_ids) ? ' checked="checked"' : '',
-					)
-				);
-			}
-		}
+		//rector php8 remove each()
+		foreach ($icon_defined_special as $key => $data) {
+    if (isset($lang[ $data['lang_key'] ]))
+ 			{
+ 				$template->assign_block_vars('defaults', ['NAME'		=> $lang[ $data['lang_key'] ], 'ID'		=> $key, 'CHECKED'	=> @in_array($key, $icon_ids) ? ' checked="checked"' : '']
+ 				);
+ 			}
+}
+		//end rector
 
 		// system
 		$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
@@ -702,16 +700,15 @@ if ($mode == '')
 
 		// list of default assignement
 		@reset($icon_defined_special);
-		while (list($key, $data) = @each($icon_defined_special))
-		{
-			if ( ($data['icon'] == $icones[$i]['ind']) && isset($lang[ $data['lang_key'] ]) )
-			{
-				$template->assign_block_vars('row.default', array(
-					'L_DEFAULT' => $lang[ $data['lang_key'] ],
-					)
-				);
-			}
-		}
+		//rector php8 remove each()
+		foreach ($icon_defined_special as $key => $data) {
+    if ( ($data['icon'] == $icones[$i]['ind']) && isset($lang[ $data['lang_key'] ]) )
+ 			{
+ 				$template->assign_block_vars('row.default', ['L_DEFAULT' => $lang[ $data['lang_key'] ]]
+ 				);
+ 			}
+}
+		//rector end
 	}
 
 	// system

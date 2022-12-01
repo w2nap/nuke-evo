@@ -101,6 +101,7 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
     unset($input['input']);
     unset($input['not_unset']);
 
+//rector error on convert, each() removed in PHP8 this will error
     while (list($var,) = @each($input))
     {
         if (!in_array($var, $not_unset))

@@ -609,7 +609,9 @@ function reply($pid, $sid, $mode, $order, $thold) {
     echo "<font class=\"option\"><strong>"._UCOMMENT.":</strong></font><br />"
         ."<textarea wrap=\"virtual\" cols=\"50\" rows=\"10\" name=\"comment\"></textarea><br />"
         ."<font class=\"content\">"._ALLOWEDHTML."<br />";
-    while (list($key)= each($AllowableHTML)) echo " &lt;".$key."&gt;";
+    foreach (array_keys($AllowableHTML) as $key) {
+    echo " &lt;".$key."&gt;";
+}
     echo "<br />";
     if (is_user() AND ($anonpost == 1)) { echo "<input type=\"checkbox\" name=\"xanonpost\"> "._POSTANON."<br />"; }
     echo "<input type=\"hidden\" name=\"pid\" value=\"$pid\">\n"
@@ -672,7 +674,9 @@ function replyPreview ($pid, $sid, $subject, $comment, $xanonpost, $mode, $order
     ."<font class=\"option\"><strong>"._UCOMMENT.":</strong></font><br />"
     ."<textarea wrap=\"virtual\" cols=\"50\" rows=\"10\" name=\"comment\">$comment</textarea><br />"
     ."<font class=\"content\">"._ALLOWEDHTML."<br />";
-    while (list($key) = each($AllowableHTML)) echo " &lt;".$key."&gt;";
+    foreach (array_keys($AllowableHTML) as $key) {
+    echo " &lt;".$key."&gt;";
+}
     echo "<br />";
     if (($xanonpost) AND ($anonpost == 1)){
         echo "<input type=\"checkbox\" name=\"xanonpost\" checked> "._POSTANON."<br />";
@@ -777,27 +781,27 @@ switch($op) {
        @include_once(dirname(__FILE__)."/mainfile.php");
     }
     if(($admintest==1) || ($moderate==2)) {
-        while(list($tdw, $emp) = each($_POST)) {
-        if (preg_match("#dkn#i",$tdw)) {
-            $emp = explode(":", $emp);
-            if($emp[1] != 0) {
-            $tdw = str_replace("dkn", "", $tdw);
-            $q = "UPDATE ".$prefix."_comments SET";
-            if(($emp[1] == 9) && ($emp[0]>=0)) { # Overrated
-                $q .= " score=score-1 where tid='$tdw'";
-            } elseif (($emp[1] == 10) && ($emp[0]<=4)) { # Underrated
-                $q .= " score=score+1 where tid='$tdw'";
-            } elseif (($emp[1] > 4) && ($emp[0]<=4)) {
-                $q .= " score=score+1, reason=$emp[1] where tid='$tdw'";
-            } elseif (($emp[1] < 5) && ($emp[0] > -1)) {
-                $q .= " score=score-1, reason=$emp[1] where tid='$tdw'";
-            } elseif (($emp[0] == -1) || ($emp[0] == 5)) {
-                $q .= " reason=$emp[1] where tid='$tdw'";
-            }
-            if(strlen($q) > 20) $db->sql_query($q);
-            }
+        foreach ($_POST as $tdw => $emp) {
+    if (preg_match("#dkn#i",$tdw)) {
+        $emp = explode(":", (string) $emp);
+        if($emp[1] != 0) {
+        $tdw = str_replace("dkn", "", $tdw);
+        $q = "UPDATE ".$prefix."_comments SET";
+        if(($emp[1] == 9) && ($emp[0]>=0)) { # Overrated
+            $q .= " score=score-1 where tid='$tdw'";
+        } elseif (($emp[1] == 10) && ($emp[0]<=4)) { # Underrated
+            $q .= " score=score+1 where tid='$tdw'";
+        } elseif (($emp[1] > 4) && ($emp[0]<=4)) {
+            $q .= " score=score+1, reason=$emp[1] where tid='$tdw'";
+        } elseif (($emp[1] < 5) && ($emp[0] > -1)) {
+            $q .= " score=score-1, reason=$emp[1] where tid='$tdw'";
+        } elseif (($emp[0] == -1) || ($emp[0] == 5)) {
+            $q .= " reason=$emp[1] where tid='$tdw'";
         }
+        if(strlen($q) > 20) $db->sql_query($q);
         }
+    }
+}
     }
 
     redirect("modules.php?name=$module_name&file=article&sid=$sid&mode=$mode&order=$order&thold=$thold");

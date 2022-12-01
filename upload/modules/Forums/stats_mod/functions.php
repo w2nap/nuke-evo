@@ -150,10 +150,11 @@ class StatisticsFUNCTIONS
         @reset($auth_ary);
 
         // Generate the Forum Authorization Level
-        while (list($forum_id, $auth_setting) = each($auth_ary))
-        {
+//php8 remove each()
+        foreach ($auth_ary as $forum_id => $auth_setting) {
             $this->auth_data_sql['forum'][$forum_id] = $auth_setting;
         }
+//end php8
         
         $this->auth_loaded = TRUE;
         return;
@@ -190,10 +191,11 @@ class StatisticsFUNCTIONS
                 $split = '';
                 $auth_condition = trim($auth_condition);
                 @reset($this->auth_data_sql[$auth_type]);
-                while (list($forum_id, $auth_cond) = each($this->auth_data_sql[$auth_type]))
-                {
-                    $auth_return['auth_check'][$forum_id] = $this->auth_data_sql[$auth_type][$forum_id][$auth_condition];
-                }
+                //php8 remove each()
+                foreach ($this->auth_data_sql[$auth_type] as $forum_id => $auth_cond) {
+    $auth_return['auth_check'][$forum_id] = $this->auth_data_sql[$auth_type][$forum_id][$auth_condition];
+}
+                //end php8
             }
 
             if ($split != '')
@@ -206,11 +208,12 @@ class StatisticsFUNCTIONS
                 }
 
                 @reset($this->auth_data_sql[$auth_type]);
-                while (list($forum_id, $auth_cond) = @each($this->auth_data_sql[$auth_type]))
-                {
-                    eval('$val = (' . $if_eval . ');');
-                    $auth_return['auth_check'][$forum_id] = $val;
-                }
+                //php8 remove each()
+                foreach ($this->auth_data_sql[$auth_type] as $forum_id => $auth_cond) {
+    eval('$val = (' . $if_eval . ');');
+    $auth_return['auth_check'][$forum_id] = $val;
+}
+                //end php8
             }
         }
     

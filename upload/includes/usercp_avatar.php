@@ -295,19 +295,18 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
 
 		if( empty($category) )
 		{
-				list($category, ) = each($avatar_images);
+				$category = key($avatar_images);
 		}
 		@reset($avatar_images);
 
 		$s_categories = '<select name="avatarcategory">';
-		while( list($key) = each($avatar_images) )
-		{
-				$selected = ( $key == $category ) ? ' selected="selected"' : '';
-				if( count($avatar_images[$key]) )
+		foreach (array_keys($avatar_images) as $key) {
+    $selected = ( $key == $category ) ? ' selected="selected"' : '';
+    if( is_countable($avatar_images[$key]) ? count($avatar_images[$key]) : 0 )
 				{
-						$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
+						$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst((string) $key) . '</option>';
 				}
-		}
+}
 		$s_categories .= '</select>';
 
 		$s_colspan = 0;
@@ -376,6 +375,7 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
 		}
 
 		$xd_meta = get_xd_metadata();
+		//RECTOR WON'T CONVERT. each() REMOVED IN PHP8 SO LIKELY WILL BREAK.
 		while ( list($code_name, ) = each($xd_meta) )
 		{
 			if ( isset($xdata[$code_name]) )

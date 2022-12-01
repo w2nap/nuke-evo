@@ -156,14 +156,14 @@ $CookieArray = $_COOKIE;
     echo "<span class=\"title\">"._YA_CURRENTCOOKIE."</span></td></tr>";
     echo "<tr><td nowrap=\"nowrap\"><strong>"._YA_COOKIENAME."</strong></td><td width=\"100%\"><strong>"._YA_COOKIEVAL."</strong></td></tr>";
     if (is_array($CookieArray) && !empty($CookieArray)) {
-        while(list($cName,$cValue) = each($CookieArray)) {
-            $cName     = str_replace(" ","",$cName);
-            if (empty($cValue)) $cValue = "(empty)";
-            $cMore     = substr("$cValue", 36, 1);
-            if (!empty($cMore)) 
-            $cValue = substr("$cValue", 0, 35)." ( . . . )";
-            echo "<tr><td align=\"left\" nowrap=\"nowrap\">$cName</td><td width=\"100%\" align=\"left\">$cValue</td></tr>";
-        }
+        foreach ($CookieArray as $cName => $cValue) {
+    $cName     = str_replace(" ","",(string) $cName);
+    if (empty($cValue)) $cValue = "(empty)";
+    $cMore     = substr("$cValue", 36, 1);
+    if (!empty($cMore)) 
+    $cValue = substr("$cValue", 0, 35)." ( . . . )";
+    echo "<tr><td align=\"left\" nowrap=\"nowrap\">$cName</td><td width=\"100%\" align=\"left\">$cValue</td></tr>";
+}
     echo "</table></td><td valign=\"top\"><input type=\"submit\" name=\"submit\" value='"._YA_COOKIEDELTHESE."'></td></form></tr></table>";
     }
     else {
@@ -204,15 +204,18 @@ OpenTable();
     echo "<span class=\"title\">"._YA_CURRENTCOOKIE."</span></td></tr>";
     echo "<tr><td nowrap=\"nowrap\"><strong>"._YA_COOKIENAME."</strong></td><td width=\"100%\"><strong>"._YA_COOKIESTAT."</strong></td></tr>";
     if (is_array($CookieArray) && !empty($CookieArray)) {
-        while(list($cName,$cValue) = each($CookieArray)) {
-            $cName = str_replace(" ","",$cName);
-            // Multiple cookie paths used to expire cookies that are no longer in use as well.
-            setcookie("$cName","1",time()-604800,"");                    // Directory only path
-            setcookie("$cName","2",time()-604800,"/");                // Site wide path
-            setcookie("$cName","3",time()-604800,"$ya_config[cookiepath]");    // Configured path
-            echo "<tr><td align=\"left\" nowrap=\"nowrap\">$cName</td><td width=\"100%\" align=\"left\">"._YA_COOKIEDEL2."</td></tr>";
-            unset($cName);
-        }
+        foreach ($CookieArray as $cName => $cValue) {
+    $cName = str_replace(" ","",(string) $cName);
+    // Multiple cookie paths used to expire cookies that are no longer in use as well.
+    setcookie("$cName","1", ['expires' => time()-604800, 'path' => ""]);
+    // Directory only path
+    setcookie("$cName","2", ['expires' => time()-604800, 'path' => "/"]);
+    // Site wide path
+    setcookie("$cName","3", ['expires' => time()-604800, 'path' => "$ya_config[cookiepath]"]);
+    // Configured path
+    echo "<tr><td align=\"left\" nowrap=\"nowrap\">$cName</td><td width=\"100%\" align=\"left\">"._YA_COOKIEDEL2."</td></tr>";
+    unset($cName);
+}
     echo "</table><td valign=\"top\"><input type=\"submit\" name=\"submit\" value='"._YA_COOKIESHOWALL."'></td></form></tr></table>";
     }
     else {

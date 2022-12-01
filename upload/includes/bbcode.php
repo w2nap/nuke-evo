@@ -1455,20 +1455,21 @@ function bbcode_array_push(&$stack, $value)
  */
 function bbcode_array_pop(&$stack)
 {
-   $arrSize = count($stack);
+   $tmpArr = [];
+   $return_val = null;
+   $arrSize = is_countable($stack) ? count($stack) : 0;
    $x = 1;
 
-   while(list($key, $val) = each($stack))
-   {
-      if($x < count($stack))
-      {
-             $tmpArr[] = $val;
-      }
-      else
-      {
-             $return_val = $val;
-      }
-      $x++;
+   foreach ($stack as $key => $val) {
+       if($x < (is_countable($stack) ? count($stack) : 0))
+       {
+              $tmpArr[] = $val;
+       }
+       else
+       {
+              $return_val = $val;
+       }
+       $x++;
    }
    $stack = $tmpArr;
 

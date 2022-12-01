@@ -707,39 +707,40 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
                 $xd_meta = get_xd_metadata();
-                while ( list($code_name, $meta) = each($xd_meta) )
-                {
-                    if ( $meta['handle_input'] && ( ( $mode == 'register' && $meta['default_auth'] == XD_AUTH_ALLOW ) || xdata_auth($code_name, $userdata['user_id']) ) )
-                    {
-                        if ( ($meta['field_length'] > 0) && (strlen($xdata[$code_name]) > $meta['field_length']) )
-                        {
-                               $error = TRUE;
-                            $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_too_long'], $meta['field_name']);
-                        }
+                //rector php8 remove each()
+                 foreach ($xd_meta as $code_name => $meta) {
+     if ( $meta['handle_input'] && ( ( $mode == 'register' && $meta['default_auth'] == XD_AUTH_ALLOW ) || xdata_auth($code_name, $userdata['user_id']) ) )
+     {
+         if ( ($meta['field_length'] > 0) && (strlen((string) $xdata[$code_name]) > $meta['field_length']) )
+         {
+                $error = TRUE;
+             $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_too_long'], $meta['field_name']);
+         }
 
-                        if ( ( count($meta['values_array']) > 0 ) && ( ! in_array($xdata[$code_name], $meta['values_array']) ) )
-                        {
-                               $error = TRUE;
-                            $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_invalid'], $meta['field_name']);
-                        }
+         if ( ( (is_countable($meta['values_array']) ? count($meta['values_array']) : 0) > 0 ) && ( ! in_array($xdata[$code_name], $meta['values_array']) ) )
+         {
+                $error = TRUE;
+             $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_invalid'], $meta['field_name']);
+         }
 
-                        if ( ( strlen($meta['field_regexp']) > 0 ) && ( ! preg_match($meta['field_regexp'], $xdata[$code_name]) ) )
-                        {
-                            $error = TRUE;
-                            $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_invalid'], $meta['field_name']);
-                        }
+         if ( ( strlen((string) $meta['field_regexp']) > 0 ) && ( ! preg_match($meta['field_regexp'], (string) $xdata[$code_name]) ) )
+         {
+             $error = TRUE;
+             $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_invalid'], $meta['field_name']);
+         }
 
-                        if ( $meta['allow_bbcode'] )
-                        {
-                            if ( $signature_bbcode_uid == '' )
-                            {
-                                $signature_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
-                            }
-                        }
+         if ( $meta['allow_bbcode'] )
+         {
+             if ( $signature_bbcode_uid == '' )
+             {
+                 $signature_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
+             }
+         }
 
-                        $xdata[$code_name] = prepare_message($xdata[$code_name], $meta['allow_html'], $meta['allow_bbcode'], $meta['allow_smilies'], $signature_bbcode_uid);
-                      }
-                }
+         $xdata[$code_name] = prepare_message($xdata[$code_name], $meta['allow_html'], $meta['allow_bbcode'], $meta['allow_smilies'], $signature_bbcode_uid);
+       }
+ }
+                //rector end
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
@@ -1077,14 +1078,15 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
                                 $xd_meta = get_xd_metadata();
-                                while ( list($code_name, $meta) = each($xd_meta) )
-                                {
-                                    $xd_value = $xdata[$code_name];
-                                    if ( ( in_array($xd_value, $meta['values_array']) || count($meta['values_array']) == 0 ) && $meta['handle_input'] )
-                                    {
-                                        set_user_xdata($user_id, $code_name, $xd_value);
-                                    }
-                                }
+                                //rector php8 remove each()
+                                foreach ($xd_meta as $code_name => $meta) {
+    $xd_value = $xdata[$code_name];
+    if ( ( in_array($xd_value, $meta['values_array']) || (is_countable($meta['values_array']) ? count($meta['values_array']) : 0) == 0 ) && $meta['handle_input'] )
+    {
+        set_user_xdata($user_id, $code_name, $xd_value);
+    }
+}
+                                //rector end
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
@@ -1408,19 +1410,20 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         }
                         else
                         {
-                                list($category, ) = each($avatar_images);
+                                $category = key($avatar_images);
                         }
                         @reset($avatar_images);
 
                         $s_categories = "";
-                        while( list($key) = each($avatar_images) )
-                        {
-                                $selected = ( $key == $category ) ? "selected=\"selected\"" : "";
-                                if( count($avatar_images[$key]) )
-                                {
-                                        $s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
-                                }
-                        }
+                        //rector php8 remove each()
+                        foreach (array_keys($avatar_images) as $key) {
+    $selected = ( $key == $category ) ? "selected=\"selected\"" : "";
+    if( is_countable($avatar_images[$key]) ? count($avatar_images[$key]) : 0 )
+    {
+            $s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst((string) $key) . '</option>';
+    }
+}
+                        //rector end
 
                         $s_colspan = 0;
                         for($i = 0; $i < count($avatar_images[$category]); $i++)
@@ -1540,10 +1543,11 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
                         reset($xdata);
-                        while ( list($key, $value) = each($xdata) )
-                        {
-                            $s_hidden_fields .= '<input type="hidden" name="' . $key . '" value="' . str_replace("\"", "&quot;", $value) . '" />';
-                        }
+                        //rector php8 remove each()
+                        foreach ($xdata as $key => $value) {
+    $s_hidden_fields .= '<input type="hidden" name="' . $key . '" value="' . str_replace("\"", "&quot;", (string) $value) . '" />';
+}
+                        //end rector
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
@@ -1716,107 +1720,80 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
                 $xd_meta = get_xd_metadata();
-                while ( list($code_name, $info) = each($xd_meta) )
-                {
-
-                	if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == ADMIN )
-                	{
-                		if ($info['display_register'] == XD_DISPLAY_NORMAL)
-                		{
-                			$template->assign_block_vars('xdata', array(
-                				'CODE_NAME' => $code_name,
-                				'NAME' => $info['field_name'],
-                				'DESCRIPTION' => $info['field_desc'],
-                    			'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', $xdata[$code_name]) : '',
-                				'MAX_LENGTH' => ( $info['field_length'] > 0) ? ( $info['field_length'] ) : ''
-                				)
-                			);
-
-                			switch ($info['field_type'])
-                			{
-                				case 'text':
-                					$template->assign_block_vars('xdata.switch_type_text', array());
-                					break;
-
-                				case 'textarea':
-                					$template->assign_block_vars('xdata.switch_type_textarea', array());
-                					break;
-
-                				case 'checkbox':
-                					$template->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == $lang['true']) ? ' checked="checked"' : ''  ));
-                					break;
-
-                				case 'radio':
-                					$template->assign_block_vars('xdata.switch_type_radio', array());
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$template->assign_block_vars('xdata.switch_type_radio.options', array(
-                	                		'OPTION' => $option,
-                	                		'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-
-                				case 'select':
-                					$template->assign_block_vars('xdata.switch_type_select', array());
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$template->assign_block_vars('xdata.switch_type_select.options', array(
-                	                		'OPTION' => $option,
-                	                		'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-                			}
-                		}
-                		elseif ($info['display_register'] == XD_DISPLAY_ROOT)
-                		{
-                            $template->assign_block_vars('xdata',
-                	 	  		array(
-                		  			'CODE_NAME' => $code_name,
-                		  			'NAME' => $xd_meta[$code_name]['field_name'],
-                		  			'DESCRIPTION' => $xd_meta[$code_name]['field_desc'],
-                       				'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', $xdata[$code_name]) : ''
-                		  		) );
-                		  	$template->assign_block_vars('xdata.switch_is_'.$code_name, array());
-
-                		  	switch ($info['field_type'])
-                			{
-                				case 'checkbox':
-                					$template->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == 1) ? ' checked="checked"' : ''  ));
-                					break;
-
-                				case 'radio':
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
-                	                		'OPTION' => $option,
-                	                		'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-
-                				case 'select':
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
-                	                		'OPTION' => $option,
-                	                		'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-                			}
-                		}
-                	}
+                //rector php8 remove each()
+                foreach ($xd_meta as $code_name => $info) {
+                    if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == ADMIN )
+                   	{
+                   		if ($info['display_register'] == XD_DISPLAY_NORMAL)
+                   		{
+                   			$template->assign_block_vars('xdata', ['CODE_NAME' => $code_name, 'NAME' => $info['field_name'], 'DESCRIPTION' => $info['field_desc'], 'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', (string) $xdata[$code_name]) : '', 'MAX_LENGTH' => ( $info['field_length'] > 0) ? ( $info['field_length'] ) : '']
+                   			);
+   
+                   			switch ($info['field_type'])
+                   			{
+                   				case 'text':
+                   					$template->assign_block_vars('xdata.switch_type_text', []);
+                   					break;
+   
+                   				case 'textarea':
+                   					$template->assign_block_vars('xdata.switch_type_textarea', []);
+                   					break;
+   
+                   				case 'checkbox':
+                   					$template->assign_block_vars('xdata.switch_type_checkbox', ['CHECKED' => ($xdata[$code_name] == $lang['true']) ? ' checked="checked"' : '']);
+                   					break;
+   
+                   				case 'radio':
+                   					$template->assign_block_vars('xdata.switch_type_radio', []);
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_type_radio.options', ['OPTION' => $option, 'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : '']
+          	                	);
+                        }
+                   					break;
+   
+                   				case 'select':
+                   					$template->assign_block_vars('xdata.switch_type_select', []);
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_type_select.options', ['OPTION' => $option, 'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : '']
+          	                	);
+                        }
+                   					break;
+                   			}
+                   		}
+                   		elseif ($info['display_register'] == XD_DISPLAY_ROOT)
+                   		{
+                               $template->assign_block_vars('xdata',
+                   	 	  		['CODE_NAME' => $code_name, 'NAME' => $xd_meta[$code_name]['field_name'], 'DESCRIPTION' => $xd_meta[$code_name]['field_desc'], 'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', (string) $xdata[$code_name]) : ''] );
+                   		  	$template->assign_block_vars('xdata.switch_is_'.$code_name, []);
+   
+                   		  	switch ($info['field_type'])
+                   			{
+                   				case 'checkbox':
+                   					$template->assign_block_vars('xdata.switch_type_checkbox', ['CHECKED' => ($xdata[$code_name] == 1) ? ' checked="checked"' : '']);
+                   					break;
+   
+                   				case 'radio':
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', ['OPTION' => $option, 'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : '']
+          	                	);
+                        }
+                   					break;
+   
+                   				case 'select':
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', ['OPTION' => $option, 'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : '']
+          	                	);
+                        }
+                   					break;
+                   			}
+                   		}
+                   	}
                 }
+                //end rector
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/

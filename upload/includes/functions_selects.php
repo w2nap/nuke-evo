@@ -107,11 +107,10 @@ function language_select($default, $select_name = "language", $dirname="modules/
         @reset($lang);
 
         $lang_select = '<select class="form-control" name="' . $select_name . '" id="'.$select_name.'">';
-        while ( list($displayname, $filename) = @each($lang) )
-        {
-                $selected = ( strtolower($default) == strtolower($filename) ) ? ' selected="selected"' : '';
-                $lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
-        }
+        foreach ($lang as $displayname => $filename) {
+    $selected = ( strtolower((string) $default) == strtolower((string) $filename) ) ? ' selected="selected"' : '';
+    $lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords((string) $displayname) . '</option>';
+}
         $lang_select .= '</select>';
 
         return $lang_select;
@@ -153,17 +152,16 @@ function tz_select($default, $select_name = 'timezone')
         }
         $tz_select = '<select class="form-control" name="' . $select_name . '" id="' . $select_name . '">';
 
-        while( list($offset, $zone) = @each($lang['tz']) )
-        {
-                $selected = ( $offset == $default ) ? ' selected="selected"' : '';
-/*****[BEGIN]******************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-                $tz_select .= '<option value="' . $offset . '"' . $selected . '>' . str_replace('GMT', 'UTC', $zone) . '</option>';
-/*****[END]********************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-        }
+        foreach ($lang['tz'] as $offset => $zone) {
+    $selected = ( $offset == $default ) ? ' selected="selected"' : '';
+    /*****[BEGIN]******************************************
+     [ Mod:    Advanced Time Management            v2.2.0 ]
+     ******************************************************/
+    $tz_select .= '<option value="' . $offset . '"' . $selected . '>' . str_replace('GMT', 'UTC', (string) $zone) . '</option>';
+    /*****[END]********************************************
+     [ Mod:    Advanced Time Management            v2.2.0 ]
+     ******************************************************/
+}
         $tz_select .= '</select>';
 
         return $tz_select;
@@ -178,11 +176,10 @@ function quick_reply_select($default, $select_name = "show_quickreply")
 
     $sqr_select = '<select class="form-control" name="' . $select_name . '" id="' . $select_name . '">';
 
-    while( list($value, $mode) = @each($lang['sqr']) )
-    {
-        $selected = ( $value == $default ) ? ' selected="selected"' : '';
-        $sqr_select .= '<option value="' . $value . '"' . $selected . '>' . $mode . '</option>';
-    }
+    foreach ($lang['sqr'] as $value => $mode) {
+    $selected = ( $value == $default ) ? ' selected="selected"' : '';
+    $sqr_select .= '<option value="' . $value . '"' . $selected . '>' . $mode . '</option>';
+}
 
     $sqr_select .= '</select>';
 
@@ -202,11 +199,10 @@ global $lang;
 
     $g_select = '<select class="form-control" name="' . $select_name . '" id="' . $select_name . '">';
 
-    while( list($value, $text) = @each($lang['show_glance_option']) )
-    {
-        $selected = ( $value == $default ) ? ' selected="selected"' : '';
-        $g_select .= '<option value="' . $value . '"' . $selected . '>' . $text . '</option>';
-    }
+    foreach ($lang['show_glance_option'] as $value => $text) {
+    $selected = ( $value == $default ) ? ' selected="selected"' : '';
+    $g_select .= '<option value="' . $value . '"' . $selected . '>' . $text . '</option>';
+}
 
     $g_select .= '</select>';
 
@@ -277,11 +273,10 @@ global $lang;
 
     $g_select = '<select class="form-control" name="logs_view_level" id="logs_view_level">';
 
-    while( list($value, $text) = @each($lang['logs_view_level']) )
-    {
-        $selected = ( $value == $default ) ? ' selected="selected"' : '';
-        $g_select .= '<option value="' . $value . '"' . $selected . '>' . $text . '</option>';
-    }
+    foreach ($lang['logs_view_level'] as $value => $text) {
+    $selected = ( $value == $default ) ? ' selected="selected"' : '';
+    $g_select .= '<option value="' . $value . '"' . $selected . '>' . $text . '</option>';
+}
 
     $g_select .= '</select>';
 

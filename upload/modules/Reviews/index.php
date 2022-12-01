@@ -51,15 +51,15 @@ function alpha() {
     $num = count($alphabet) - 1;
     echo "<center>[ ";
     $counter = 0;
-    while (list(, $ltr) = each($alphabet)) {
-        echo "<a href=\"modules.php?name=$module_name&amp;rop=$ltr\">$ltr</a>";
-        if ( $counter == round($num/2) ) {
-            echo " ]\n<br />\n[ ";
-        } elseif ( $counter != $num ) {
-            echo "&nbsp;|&nbsp;\n";
-        }
-        $counter++;
+    foreach ($alphabet as $ltr) {
+    echo "<a href=\"modules.php?name=$module_name&amp;rop=$ltr\">$ltr</a>";
+    if ( $counter == round($num/2) ) {
+        echo " ]\n<br />\n[ ";
+    } elseif ( $counter != $num ) {
+        echo "&nbsp;|&nbsp;\n";
     }
+    $counter++;
+}
     echo " ]</center><br /><br />\n\n\n";
     echo "<center>[ <a href=\"modules.php?name=$module_name&amp;rop=write_review\">"._WRITEREVIEW."</a> ]</center><br /><br />\n\n";
 }

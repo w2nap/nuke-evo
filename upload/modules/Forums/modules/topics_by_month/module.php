@@ -43,8 +43,8 @@ for ($i = 0; $i < $row_count; $i++)
 
 @reset($month_array);
 
-while (list($year, $data) = each($month_array))
-{
+//php8 remove each()
+foreach ($month_array as $year => $data) {
     for ($i = 0; $i < 12; $i++)
     {
         if (!isset($month_array[$year][$i]))
@@ -53,6 +53,7 @@ while (list($year, $data) = each($month_array))
         }
     }
 }
+//end php8
 @reset($month_array);
 
 $year_ar = array();
@@ -69,14 +70,15 @@ $month_10 = array();
 $month_11 = array();
 $month_12 = array();
 
-while (list($year, $data) = each($month_array))
-{
+//php8 remove each()
+foreach ($month_array as $year => $data) {
     $year_ar[] = $year;
     for ($i = 0; $i < 12; $i++)
     {
         eval("\$month_" . ($i+1) . "[] = \$month_array[\$year][\$i]['num_topics'];");
     }
 }
+//php8 end
 
 $core->set_view('columns', 13);
 $core->set_view('num_blocks', 1);

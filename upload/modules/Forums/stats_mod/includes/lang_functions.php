@@ -51,21 +51,21 @@ function get_modules_from_lang_block($lang_block)
     $content = explode("\n", $lang_block);
     @reset($content);
 
-    while (list($key, $data) = @each($content))
-    {
+//php8 remove each()
+    foreach ($content as $key => $data) {
         if (!$in_block)
         {
-            if (preg_match("/(.*?)\[module:(.*?)\]/", $data))
+            if (preg_match("/(.*?)\[module:(.*?)\]/", (string) $data))
             {
                 $in_block = TRUE;
-                $block_name = preg_replace("/(.*?)\[module:(.*?)\]/", "\\2", $data);
+                $block_name = preg_replace("/(.*?)\[module:(.*?)\]/", "\\2", (string) $data);
                 $block_name = trim($block_name);
                 $ret_array[$block_name] = '';
             }
         }
         else
         {
-            if (preg_match("/\[\/module:" . preg_quote($block_name) . "\]/", $data))
+            if (preg_match("/\[\/module:" . preg_quote((string) $block_name) . "\]/", (string) $data))
             {
                 $in_block = FALSE;
             }
@@ -75,10 +75,11 @@ function get_modules_from_lang_block($lang_block)
                 {
                     $ret_array[$block_name] .= "\n";
                 }
-                $ret_array[$block_name] .= trim($data);
+                $ret_array[$block_name] .= trim((string) $data);
             }
         }
     }
+//end php8
 
     return $ret_array;
 }
@@ -841,7 +842,7 @@ function add_new_language_predefined($new_language, $modules)
     $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
     @reset($modules);
-    while (list($short_name, $lang_content) = each($modules))
+    foreach ($modules as $short_name => $lang_content)
     {
         $short_name = trim($short_name);
 
